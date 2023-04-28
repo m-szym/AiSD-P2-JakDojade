@@ -15,6 +15,7 @@ public:
 	Node(char* name, int index);
 	~Node();
 	void set_name(char* new_name);
+	Node* sort_links();
 
 	void print_node();
 };

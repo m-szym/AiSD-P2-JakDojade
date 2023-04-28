@@ -89,27 +89,27 @@ bool out_of_map(int width, int height, int i, int j, char direction)
 
 bool out_of_map_coords(int width, int height, int i, int j, char direction)
 {
-    if (direction == DIR_UP)
-    {
+    //if (direction == DIR_UP)
+    //{
         if (i < 0) return true;
-        else return false;
-    }
-    else if (direction == DIR_DOWN)
-    {
+        //else return false;
+    //}
+    //if (direction == DIR_DOWN)
+    //{
         if (i >= height) return true;
-        else return false;
-    }
+        //else return false;
+    //}
 
-    if (direction == DIR_LEFT)
-    {
+    //if (direction == DIR_LEFT)
+    //{
         if (j < 0) return true;
-        else return false;
-    }
-    else if (direction == DIR_RIGHT)
-    {
+        //else return false;
+    //}
+    //if (direction == DIR_RIGHT)
+    //{
         if (j >= width) return true;
         else return false;
-    }
+    //}
 
     return true;    //b³¹d jakiœ
 }
@@ -490,6 +490,9 @@ void read_flight(Graph& g)
     List2d<Node>* start_city = nullptr;
     List2d<Node>* end_city = nullptr;
 
+    Node* hstart_city = nullptr;
+    Node* hend_city = nullptr;
+
     int si = 0;
     int ei = 0;
     int flight_time = 0;
@@ -504,28 +507,26 @@ void read_flight(Graph& g)
             if (is_number(flight_time_substring) == true)
             {
                 flight_time = atoi(flight_time_substring);
-
-                if (g.nodes_n == 10000)
-                {
-                    free(raw_string);
-                    return;
-                }
                 
-                start_city = g.get_city_by_name(start_city_substring);
-                end_city = g.get_city_by_name(end_city_substring);
+                hstart_city = g.get_from_hash(start_city_substring);
+                hend_city = g.get_from_hash(end_city_substring);
 
-                si = g.get_city_node_i_by_name(start_city_substring);
-                ei = g.get_city_node_i_by_name(end_city_substring);
+                //start_city = g.get_city_by_name(start_city_substring);
+                //end_city = g.get_city_by_name(end_city_substring);
+
+                //si = g.get_city_node_i_by_name(start_city_substring);
+                //ei = g.get_city_node_i_by_name(end_city_substring);
 
 
-                if (start_city != nullptr)
+                if (hstart_city != nullptr)
                 {
-                    if (end_city != nullptr)
+                    if (hend_city != nullptr)
                     {
                         if (flight_time > 0)
                         {
                             //start_city->cont->links.add_after(new Link(flight_time, g., end_city->cont, true));
-                            g.nodes[si].links.add_after(new Link(flight_time, &(g.nodes[si]), &(g.nodes[ei]), true));
+                            //g.nodes[si].links.add_after(new Link(flight_time, &(g.nodes[si]), &(g.nodes[ei]), true));
+                            hstart_city->links.add_after(new Link(flight_time, hstart_city, hend_city, true));
                         }
                         else
                             std::cout << "lot wrong time" << flight_time;
@@ -613,6 +614,9 @@ void do_command(Graph& g)
     List2d<Node>* end_city = nullptr;
     int mode_i = 0;
 
+    Node* hstart_city = nullptr;
+    Node* hend_city = nullptr;
+
     if (raw_string != nullptr)
     {
         start_city_substring = strtok(raw_string, " ");
@@ -624,10 +628,16 @@ void do_command(Graph& g)
             {
                 mode_i = atoi(mode);
 
-                int s = g.get_city_node_i_by_name(start_city_substring);
-                int e = g.get_city_node_i_by_name(end_city_substring);
-                if (s >= 0 && e >= 0)
-                    my_dijkstra3(g, s, e, mode_i);
+                //int s = g.get_city_node_i_by_name(start_city_substring);
+                //int e = g.get_city_node_i_by_name(end_city_substring);
+                //if (s >= 0 && e >= 0)
+                //    my_dijkstra3(g, s, e, mode_i);
+
+                hstart_city = g.get_from_hash(start_city_substring);
+                hend_city = g.get_from_hash(end_city_substring);
+
+                if (hstart_city != nullptr && hend_city != nullptr)
+                    my_dijkstra4(g, hstart_city, hend_city, mode_i);
 
             }
         }
