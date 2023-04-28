@@ -1,13 +1,34 @@
 #include "Graph.h"
 
+Node* Graph::insert_to_hash(Node* node)
+{
+	this->hash_nodes->insert(node->name, node);
+	this->nar[node->arr_index] = node;
+
+	return node;
+}
+
+Node* Graph::get_from_hash(char* name)
+{
+	return this->hash_nodes->operator[](name);
+}
+
 Graph::Graph(int nodes_to_set)
 	: nodes_n(nodes_to_set)
 {
+	this->hash_nodes = new HashTablet<Node>(nodes_to_set);
 	this->nodes = new Node[nodes_n];
+	this->nar = new Node*[nodes_n];
+	for (int i = 0; i < nodes_n; i++)
+	{
+		nar[i] = nullptr;
+	}
 }
 
 Graph::~Graph()
 {
+	delete hash_nodes;
+	delete[] nar;
 	delete[] nodes;
 	nods.root_delete_list();
 }

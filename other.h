@@ -1,6 +1,12 @@
-#include "Graph.h"
+#pragma once
+
+#define _CRT_SECURE_NO_WARNINGS
+
+//#include "Graph.h"
 #include "Constants.h"
 #include "dijkstra.h"
+
+//#include "HashTablet.h"
 
 char* find_name(char** map, int width, int height, int oi, int oj);
 
