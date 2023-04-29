@@ -5,10 +5,13 @@
 #include <cstring>
 #include <cstdio>
 
-#include "other.h"
+
 #include <stack>
 #include <queue>
-#include "List2d.h"
+
+#include "other.h"
+
+
 
 
 struct XY
@@ -122,6 +125,7 @@ int main()
     int k = 0;
     char* tmp_s = nullptr;
     int stop_i = 0;
+    Node* curn = nullptr;
     for (int i = 0; i < height; i++)
     {
         for (int j = 0; j < width; j++)
@@ -135,17 +139,20 @@ int main()
                     {
                         stop_i = strlen(tmp_s) - 1;
 
-                        g.nodes[k].set_name(tmp_s);     //zapisuję nazwę miasta
-                        g.nodes[k].arr_index = k;
+                        curn = g.insert_to_hash(new Node(tmp_s, k));
+                        register_star(map, nmap, width, height, i, j, curn, strlen(tmp_s));
 
-                        g.nods.add_after(new Node);
-                        g.nods.next->cont->set_name(tmp_s);
+                        //g.nodes[k].set_name(tmp_s);     //zapisuję nazwę miasta
+                        //g.nodes[k].arr_index = k;
+
+                        //g.nods.add_after(new Node);
+                        //g.nods.next->cont->set_name(tmp_s);
                         
                         //nmap[i][j] = &(g.nodes[k]);     //zapisuję adres do węzła w grafie odpowiadającego miastu na tej pozycji na mapie pomoczniczej
                         //nmap[i][j] = g.nods.next->cont;
                         // 
                         //register_star(map, nmap, width, height, i, j, g.nods.next->cont, strlen(tmp_s));
-                        register_star(map, nmap, width, height, i, j, &(g.nodes[k]), strlen(tmp_s));    //powinno wczytać do tablicowych
+                        //register_star(map, nmap, width, height, i, j, &(g.nodes[k]), strlen(tmp_s));    //powinno wczytać do tablicowych
                         
                         delete[] tmp_s;
                     }
@@ -160,9 +167,42 @@ int main()
     //delete[] tmp_s;
 
 
+    //std::cout << "\n\n";
+    ////int cc = 0;
+    //std::cout << "cities=" << cities;
+    //std::cout << "\nhash=nodes=" << g.hash_nodes->array_size << "\n";
+    //for (int o = 0; o < g.hash_nodes->array_size ; o++)
+    //{
+    //    if (g.hash_nodes->operator[](o) != nullptr)
+    //    {
+    //        //std::cout << g.hash_nodes->operator[](o)->name << " hs= " << (int) g.hash_nodes->hash_string(g.hash_nodes->operator[](o)->name) << " h= " << g.hash_nodes->hash(g.hash_nodes->operator[](o)->name) << "\n";
+    //        std::cout << cc << " = " << g.hash_nodes->operator[](o)->name << "\n";
+    //        cc++;
+    //    }
+    //}
 
-
-
+    //Node* tn = nullptr;
+    //int cc = 0;
+    //for (int zer = 0; zer < g.hash_nodes->array_size; zer++)
+    //{
+    //    tn = g.hash_nodes->get_nth(zer);
+    //    if (tn != nullptr)
+    //    {
+    //        std::cout << cc << " : " << zer << " = " << tn->name << " [" << tn->arr_index << "]" << "\n";
+    //        cc++;
+    //    }
+    //}
+    //std::cout << "\n\n";
+    //tn = nullptr;
+    //for (int z = 0; z < g.nodes_n; z++)
+    //{
+    //    tn = g.nar[z];
+    //    if (tn != nullptr)
+    //    {
+    //        std::cout << z << " = " << tn->name << " [" << tn->arr_index << "]" << "\n";
+    //    }
+    //}
+    //std::cout << "\n\n";
 
     //znajdywanie i zapisywanie połączeń miedzy węzłami do grafu
     for (int i = 0; i < height; i++)
@@ -256,134 +296,7 @@ int main()
 }
 
 
-//int count_road_neighbours(char** map, int oi, int oj, int width, int height)
-//{
-//    int n = 0;
-//
-//    if (out_of_map(width, height, oi, oj, DIR_UP) == false && map[oi - 1][oj] == ROAD_SYMBOL)
-//        n++;
-//
-//    if (out_of_map(width, height, oi, oj, DIR_DOWN) == false && map[oi + 1][oj] == ROAD_SYMBOL)
-//        n++;
-//
-//    if (out_of_map(width, height, oi, oj, DIR_LEFT) == false && map[oi][oj - 1] == ROAD_SYMBOL)
-//        n++;
-//
-//    if (out_of_map(width, height, oi, oj, DIR_RIGHT) == false && map[oi][oj + 1] == ROAD_SYMBOL)
-//        n++;
-//
-//    return n;
-//}
-//
-////inters - skrzyżowania i miasta - zliczyć przy wczytywaniu mapy
-//void sigismundD(char** map, int width, int height, Node*** nmap, int inters)
-//{
-//    Graph tg(inters);
-//
-//    for (int i = 0; i < height; i++)
-//    {
-//        for (int j = 0; j < width; j++)
-//        {
-//
-//        }
-//    }
-//}
-//
-//void crawler(char** map, int width, int height, Node*** nmap, int oi, int oj, char parent_dir, int path_length, int k, Graph& g, bool** nodes)
-//{
-//    if (parent_dir != DIR_UP && out_of_map(width, height, oi, oj, DIR_UP) == false )
-//    {
-//        if (map[oi - 1][oj] == ROAD_SYMBOL)
-//        {
-//            //rvis[oi - 1][oj] = true;
-//            //read_path(map, nmap, width, height, oi - 1, oj, o_start_node, path_length + 1, DIR_DOWN);
-//            stack.add_after(new XY(oi - 1, oj, path_length + 1));
-//            //rvis[oi - 1][oj] = false;
-//        }
-//        else if (map[oi - 1][oj] == CITY_SYMBOL || count_road_neighbours(map, oi - 1, oj, width, height) > 2)
-//        {
-//            if (nodes[oi - 1][oj] == false)
-//            {
-//                g.nodes[k].arr_index = k;
-//                g.nodes[k].links.add_after(new Link())
-//                nodes[oi - 1][oj] = true;
-//                k++;
-//            }
-//
-//
-//            return;
-//        }
-//    }
-//
-//    if (out_of_map(width, height, oi, oj, DIR_DOWN) == false && rvis[oi + 1][oj] == false)
-//    {
-//
-//        if (map[oi + 1][oj] == ROAD_SYMBOL)
-//        {
-//            //rvis[oi + 1][oj] = true;
-//            //read_path(map, nmap, width, height, oi + 1, oj, o_start_node, path_length + 1, DIR_UP);
-//            stack.add_after(new XY(oi + 1, oj, path_length + 1));
-//            //rvis[oi + 1][oj] = false;
-//        }
-//        else if (map[oi + 1][oj] == CITY_SYMBOL)
-//        {
-//            if (nmap[oi + 1][oj] != nullptr)    //w innym wypadku jakiś błąd
-//            {
-//                o_start_node->links.add_after(new Link(path_length, o_start_node, nmap[oi + 1][oj]));
-//                //return;
-//
-//            }
-//        }
-//    }
-//
-//    if (out_of_map(width, height, oi, oj, DIR_LEFT) == false && rvis[oi][oj - 1] == false)
-//    {
-//        if (map[oi][oj - 1] == ROAD_SYMBOL)
-//        {
-//            //rvis[oi][oj - 1] = true;
-//            //read_path(map, nmap, width, height, oi, oj - 1, o_start_node, path_length + 1, DIR_RIGHT);
-//            //rvis[oi][oj - 1] = false;
-//            stack.add_after(new XY(oi, oj - 1, path_length + 1));
-//        }
-//        else if (map[oi][oj - 1] == CITY_SYMBOL)
-//        {
-//            if (nmap[oi][oj - 1] != nullptr)    //w innym wypadku jakiś błąd
-//            {
-//                o_start_node->links.add_after(new Link(path_length, o_start_node, nmap[oi][oj - 1]));
-//                //return;
-//
-//            }
-//        }
-//    }
-//
-//    if (out_of_map(width, height, oi, oj, DIR_RIGHT) == false && rvis[oi][oj + 1] == false)
-//    {
-//        if (map[oi][oj + 1] == ROAD_SYMBOL)
-//        {
-//            //rvis[oi][oj + 1] = true;
-//            //read_path(map, nmap, width, height, oi, oj + 1, o_start_node, path_length + 1, DIR_LEFT);
-//            stack.add_after(new XY(oi, oj + 1, path_length + 1));
-//            //rvis[oi][oj + 1] = false;
-//        }
-//        else if (map[oi][oj + 1] == CITY_SYMBOL)
-//        {
-//            if (nmap[oi][oj + 1] != nullptr)    //w innym wypadku jakiś błąd
-//            {
-//                o_start_node->links.add_after(new Link(path_length, o_start_node, nmap[oi][oj + 1]));
-//                //return;
-//                //for (int i = 0; i < height; i++)
-//                //{
-//                //    for (int j = 0; j < width; j++)
-//                //    {
-//                //        if (rvis[i][j] == true) rvis[i][j] = false;
-//                //    }
-//                //}
-//            }
-//        }
-//    }
-//
-//    //rvis[oi][oj] = false;
-//}
+
 
 
 
@@ -728,13 +641,7 @@ void setx(XY** x,int oi, int oj, int i, int j, int path)
 
 void main_bfs20(char** map, Node*** nmap, int width, int height, int ooi, int ooj, Node* o_start_node, int path_length, XY** x)
 {
-    //for (int i = 0; i < height; i++)
-    //{
-    //    for (int j = 0; j < width; j++)
-    //    {
-    //        if (rvis[i][j] == true) rvis[i][j] = false;
-    //    }
-    //}
+
     static int visi = 0;
     
 
@@ -742,30 +649,17 @@ void main_bfs20(char** map, Node*** nmap, int width, int height, int ooi, int oo
     int oi = 0;
     int oj = 0;
     int l = 0;
-    //que.push(new XY(ooi, ooj, 0));
-    //Q.add_at_end(new XY(ooi, ooj, 0));
+
     setx(x, 0, 0, ooi, ooj, 0);
     int qCi = 0;
     int qCj = 1;
     int qIi = 0;
     int qIj = 0;
 
-    //while (!que.empty()) 
-    //while (Q.start != nullptr)
+
     while (qCi * width + qCj > qIi * width + qIj)
     {
-        //xy = que.front();
-        //bfs2(map, nmap, width, height, xy->y, xy->x, o_start_node, xy->path);
 
-        //oi = que.front()->y;
-        //oj = que.front()->x;
-        //l = que.front()->path;
-        //que.pop();
-
-        /*oi = Q.start->cont->y;
-        oj = Q.start->cont->x;
-        l = Q.start->cont->path;*/
-        //Q.remove_at_start();
 
         oi = x[qIi][qIj].y;
         oj = x[qIi][qIj].x;
@@ -777,34 +671,24 @@ void main_bfs20(char** map, Node*** nmap, int width, int height, int ooi, int oo
             qIj = 0;
         }
 
-        //std::cout << "x: " << oj << ", y: " << oi << " - l: " << l << " = t: " << vist[oi][oj] << " << ";
-        //if (rvis[oi][oj] == true) std::cout << "1\n";
-        //else std::cout << "0\n";
-        //rvis[oi][oj] = true;
-        //vist[oi][oj] = vist[oi][oj] + 1;
 
 
 
         if (oi - 1 >= 0)
         {
 
-            //if (map[oi - 1][oj] == ROAD_SYMBOL && rvis[oi - 1][oj] == false)
+
             if (map[oi - 1][oj] == ROAD_SYMBOL && rvis2[oi - 1][oj] != visi)
             {
-                rvis[oi - 1][oj] = true;
                 rvis2[oi - 1][oj] = visi;
-                //Q.add_at_end(new XY(oi - 1, oj, l + 1));
                 setx(x, qCi, qCj, oi - 1, oj, l + 1);
-                //std::cout << "enq on:" << qCi << ", " << qCj << " # n: " << oi-1 << ", " << oj << " with l: " << l+1 << std::endl;
                 qCj++;
                 if (qCj == width)
                 {
                     qCi++;
                     qCj = 0;
                 }
-                vist[oi - 1][oj] = vist[oi - 1][oj] + 1;
                 
-                //que.push(new XY(oi - 1, oj, l + 1));
 
             }
             else if (map[oi - 1][oj] == CITY_SYMBOL)
@@ -813,6 +697,8 @@ void main_bfs20(char** map, Node*** nmap, int width, int height, int ooi, int oo
                 {
                     o_start_node->links.add_after(new Link(l, o_start_node, nmap[oi - 1][oj]));
                     nmap[oi - 1][oj]->links.add_after(new Link(l, nmap[oi - 1][oj], o_start_node));
+
+
                     //std::cout << "Found\n";
 
                 }

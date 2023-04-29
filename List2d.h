@@ -97,7 +97,7 @@ template <typename content_type>
 List2d<content_type>::List2d(content_type* cont, List2d* next, List2d* prev)
 	: cont(cont), next(next), prev(prev)
 {
-       // std::cout << "List2d" << std::endl;
+	   // std::cout << "List2d" << std::endl;
 }
 
 template<typename content_type> 
@@ -216,25 +216,25 @@ List2d<content_type>* List2d<content_type>::root_delete_list()
 template<typename content_type> 
 List2d<content_type>::~List2d()
 {
-    //std::cout << "~List2d" << std::endl;
+	//std::cout << "~List2d" << std::endl;
 	delete this->cont;	//i mie� nadziej�, �e b�dzie ok
 }
 
 template<typename content_type>
 void List2d<content_type>::remove_self() {
-    if (this->prev == nullptr)//root
-        return;
+	if (this->prev == nullptr)//root
+		return;
 
-    this->prev->remove_after();
+	this->prev->remove_after();
 }
 
 template<typename content_type>
 List2d<content_type> *List2d<content_type>::get_last() {
-    List2d<content_type>* cur = this;
-    while (cur->next != nullptr) {
-        cur = cur->next;
-    }
-    return cur;
+	List2d<content_type>* cur = this;
+	while (cur->next != nullptr) {
+		cur = cur->next;
+	}
+	return cur;
 }
 
 

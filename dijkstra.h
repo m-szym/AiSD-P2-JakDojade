@@ -1,6 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include <algorithm>
+//#include "HashTablet.h"
 
 class Dijkstra_wrapper {
 public:
@@ -11,6 +12,8 @@ public:
 void my_dijkstra(Graph& g, List2d<Node>* start_city_node, List2d<Node>* end_city_node);
 void my_dijkstra2(Graph& g, int start_city_node, int end_city_node);
 void my_dijkstra3(Graph& g, int start_city_node, int end_city_node, int mode);
+
+void my_dijkstra4(Graph& g, Node* start_city_node, Node* end_city_node, int mode);
 void rec_read_prev(Graph& g, int* prev_arr, int i);
 
 int get_length_of_road_to_node(List2d<Node>* start_city_node, List2d<Node>* end_city_node);

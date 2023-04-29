@@ -1,6 +1,7 @@
 #pragma once
 #include "List2d.h"
 #include <cstring>
+#include "hashing.h"
 
 class Link;
 
@@ -15,7 +16,9 @@ public:
 	Node(char* name, int index);
 	~Node();
 	void set_name(char* new_name);
+	Node* sort_links();
 
+	bool operator==(char* key);
 	void print_node();
 };
 
@@ -27,6 +30,8 @@ public:
 	Node* start_node;
 	Node* end_node;
 
+
+	
 	Link(int new_length, Node* new_start_node, Node* new_end_node);
 	Link(int new_length, Node* new_start_node, Node* new_end_node, bool new_special);
 

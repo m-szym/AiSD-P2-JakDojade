@@ -331,12 +331,175 @@ void my_dijkstra3(Graph& g, int start_city_node, int end_city_node, int mode)
     delete[] prev_arr;
 }
 
+#include <queue>
+void my_dijkstra4(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
+{
+    int nodes = g.nodes_n;
+
+
+    int* dist_arr = new int[nodes];
+    bool* vis_arr = new bool[nodes];
+    int* prev_arr = new int[nodes];
+
+    for (int i = 0; i < nodes; i++)
+    {
+        dist_arr[i] = INT_MAX;
+        prev_arr[i] = -1;
+        vis_arr[i] = false;
+    }
+
+    int start_i = start_city_node->arr_index;
+    int end_i = end_city_node->arr_index;
+
+    /*int start_i = 6;
+    int end_i = 4;*/
+
+    dist_arr[start_i] = 0;
+
+
+    int k = 0;
+    int tmp_dist = 0;
+    int tmp_end = 0;
+    int visited = 0;
+
+    //List2d<Link>* link_cur = g.nar[k].links.next;
+    List2d<Link>*link_cur = nullptr;
+
+    int minv = 0;
+    int mini = 0;
+
+    //start_city_node->sort_links();
+
+    while (visited < nodes)
+    {
+        if (nodes > 10000 && visited > 10000) return;
+        minv = INT_MAX;
+        for (int i = 0; i < nodes; i++)
+        {
+            if (vis_arr[i] == false && dist_arr[i] <= minv)
+            {
+                minv = dist_arr[i];
+                mini = i;
+            }
+        }
+        /*
+        for (int i = 0; i < nodes; i++)
+        {
+            if (vis_arr[i] == false && dist_arr[i] == minv)
+            {
+                mini = i;
+                break;
+            }
+        }*/
+        k = mini;
+        if (k == end_i) break;
+
+        if (vis_arr[k] == false)
+        {
+            vis_arr[k] = true;
+            visited++;
+        }
+
+        link_cur = g.nar[k]->links.next;
+        while (link_cur != nullptr)
+        {
+            tmp_end = link_cur->cont->end_node->arr_index;
+
+            if (vis_arr[tmp_end] == false)
+            {
+
+                //tmp_dist = dist_arr[k] + link_cur->cont->length;
+                if (link_cur->cont->special)
+                {
+                    if (tmp_end != end_i)
+                        tmp_dist = dist_arr[k] + link_cur->cont->length;    //za odwiedzenia miasta
+                    else
+                        tmp_dist = dist_arr[k] + link_cur->cont->length;
+                }
+                else
+                    tmp_dist = dist_arr[k] + link_cur->cont->length + 1;
+
+                if (tmp_dist < dist_arr[tmp_end])
+                {
+                    dist_arr[tmp_end] = tmp_dist;
+                    prev_arr[tmp_end] = k;
+                }
+            }
+            link_cur = link_cur->next;
+        }
+    }
+
+    //int a = 0;
+    //int b = 0;
+    //std::cout << "Odleg³oœci od " << g.nar[start_i].name << "\n";
+    //for (int i = 0; i < nodes; i++)
+    //{
+    //    if (i == start_i) continue;
+    //    std::cout << "\tDo " << g.nar[i].name << " : " << dist_arr[i] << "\n";
+    //    //if (prev_arr[i] >= 0) std::cout << " ostatni stop w " << g.nar[prev_arr[i]].name;
+    //    std::cout << "\t\t";
+    //    //a = i;
+    //    //while (prev_arr[a] >= 0) {
+    //    //    std::cout << " -> " << g.nar[prev_arr[a]].name;
+    //    //    a = prev_arr[a];
+    //    //}
+    //    rec_read_prev(g, prev_arr, i);
+
+    //    std::cout << "\n";
+    //}
+    //std::cout << "Szukano do" << g.nar[end_i].name << " i znaleziono " << dist_arr[end_i];
+
+    if (mode == 0)
+    {
+        std::cout << dist_arr[end_i] << "\n";
+    }
+    else if (mode == 1)
+    {
+        //if (dist_arr[end_i] < 2147483647)
+        std::cout << dist_arr[end_i] << " ";
+        /*else
+        {
+            std::cout << "int of " << prev_arr[end_i] << " - " << vis_arr[end_i] << " + ";
+            std::cout << dist_arr[g.get_city_node_i_by_name((char*)"FF")];
+        }*/
+
+        if (g.nodes_n < 10000) rec_read_prev(g, prev_arr, end_i);
+        else {
+            int p = prev_arr[end_i];
+            List2dRoot<int> rec;
+            while (prev_arr[p] >= 0)
+            {
+                //std::cout << g.nar[prev_arr[p]]->name << " ";
+                rec.add_at_start(new int(p));
+                p = prev_arr[p];
+            }
+            List2d<int>* c = rec.start;
+            while (c != nullptr)
+            {
+                if (*(c->cont) >= 0)
+                    std::cout << g.nar[prev_arr[*(c->cont)]]->name << " ";
+                c = c->next;
+            }
+            rec.delete_list();
+        }
+
+        std::cout << "\n";
+    }
+
+
+
+    delete[] dist_arr;
+    delete[] vis_arr;
+    delete[] prev_arr;
+}
+
+
 void rec_read_prev(Graph& g, int* prev_arr, int i) {
     if (prev_arr[prev_arr[i]] < 0) return;
 
     if (prev_arr[i] >= 0) {
         rec_read_prev(g, prev_arr, prev_arr[i]);
-        std::cout  << g.nodes[prev_arr[i]].name << " ";
+        std::cout  << g.nar[prev_arr[i]]->name << " ";
     }
 }
 
