@@ -31,8 +31,12 @@ public:
 	List2d<content_type>* root_delete_list();
 
 
+	List2d<content_type>* operator++();
 
 
+	List2d<content_type>* swap(List2d<content_type>* other);
+	List2d<content_type>* swap_next();
+	List2d<content_type>* swap_prev();
 
 	~List2d();
 };
@@ -63,6 +67,12 @@ public:
 	void remove_at_end();
 
 	List2d<content_type>* delete_list();
+
+	List2d<content_type>* update_start();
+	List2d<content_type>* update_end();
+
+
+
 
 	~List2dRoot();
 };
@@ -97,7 +107,7 @@ template <typename content_type>
 List2d<content_type>::List2d(content_type* cont, List2d* next, List2d* prev)
 	: cont(cont), next(next), prev(prev)
 {
-       // std::cout << "List2d" << std::endl;
+	   // std::cout << "List2d" << std::endl;
 }
 
 template<typename content_type> 
@@ -211,30 +221,88 @@ List2d<content_type>* List2d<content_type>::root_delete_list()
 	return this;
 }
 
+template<typename content_type>
+inline List2d<content_type>* List2d<content_type>::operator++()
+{
+	return this->next;
+}
+
+template<typename content_type>
+inline List2d<content_type>* List2d<content_type>::swap(List2d<content_type>* other)
+{
+	List2d* pprev = this->prev;
+	List2d* nnext = other->next;
+
+
+
+	return nullptr;
+}
+
+template<typename content_type>
+inline List2d<content_type>* List2d<content_type>::swap_next()
+{
+	if (this->next == nullptr || this->prev == nullptr) return this;
+
+	List2d* pprev = this->prev;
+	List2d* next_node = this->next;
+	List2d* nnext = this->next->next;
+
+	this->next = nnext;
+	this->prev = next_node;
+	next_node->next = this;
+	next_node->prev = pprev;
+
+	pprev->next = next_node;
+	nnext->prev = this;
+
+	return next_node;
+}
+
+template<typename content_type>
+inline List2d<content_type>* List2d<content_type>::swap_prev()
+{
+	if (this->prev == nullptr || this->prev == nullptr) return this;
+
+	List2d* pprev = this->prev->prev;
+	List2d* prev_node = this->prev;
+	List2d* nnext = this->next;
+
+	this->next = prev_node;
+	this->prev = pprev;
+	prev_node->next = nnext;
+	prev_node->prev = this;
+
+	pprev->next = this;
+	nnext->prev = prev_node;
+
+	return prev_node;
+}
+
 
 
 template<typename content_type> 
 List2d<content_type>::~List2d()
 {
-    //std::cout << "~List2d" << std::endl;
-	delete this->cont;	//i mie� nadziej�, �e b�dzie ok
+	//std::cout << "~List2d" << std::endl;
+	if (this->cont != nullptr)
+		delete this->cont;	//i mie� nadziej�, �e b�dzie ok
 }
 
 template<typename content_type>
 void List2d<content_type>::remove_self() {
-    if (this->prev == nullptr)//root
-        return;
+	if (this->prev == nullptr)//root
+		return;
 
-    this->prev->remove_after();
+	this->prev->remove_after();
 }
 
 template<typename content_type>
 List2d<content_type> *List2d<content_type>::get_last() {
-    List2d<content_type>* cur = this;
-    while (cur->next != nullptr) {
-        cur = cur->next;
-    }
-    return cur;
+	List2d<content_type>* cur = this;
+	while (cur->next != nullptr) {
+		cur = cur->next;
+	}
+	return cur;
 }
 
 
@@ -513,11 +581,13 @@ inline List2d<content_type>* List2dRoot<content_type>::delete_list()
 	return this->root->root_delete_list();
 }
 
+
 template<typename content_type>
 inline List2dRoot<content_type>::~List2dRoot()
 {
-	this->delete_list();
-	delete end;
-	delete start;
-	delete root;
+	//this->delete_list();
+	root->root_delete_list();
+	//delete end;
+	//delete start;
+	//delete root;
 }
