@@ -1,61 +1,34 @@
 #include "Graph.h"
 
-Graph::Graph(int nodes_to_set)
-	: nodes_n(nodes_to_set)
+Node* Graph::insert_to_hash(Node* node)
 {
-	this->nodes = new Node[nodes_n];
+	this->nodes_hashtable->insert(node->name, node);
+	this->nodes_array[node->arr_index] = node;
+
+	return node;
+}
+
+Node* Graph::get_from_hash(char* name)
+{
+	return this->nodes_hashtable->operator[](name);
+}
+
+Graph::Graph(int nodes_to_set)
+{
+	this->nodes_n = nodes_to_set;
+
+	this->nodes_hashtable = new HashTablet<Node>(nodes_n);
+	this->nodes_array = new Node*[nodes_n];
+
+	for (int i = 0; i < nodes_n; i++)
+	{
+		nodes_array[i] = nullptr;
+	}
 }
 
 Graph::~Graph()
 {
-	delete[] nodes;
-	nods.root_delete_list();
+	delete nodes_hashtable;
+	delete[] nodes_array;
 }
 
-void Graph::print_graph()
-{
-	List2d<Node>* cur = this->nods.next;
-	std::cout << "\n\t--- Graf ---\n\n";
-	while (cur != nullptr) {
-		cur->cont->print_node();
-		cur = cur->next;
-		std::cout << "\n";
-	}
-	std::cout << "\n\t--- Koniec ---\n\n";
-}
-
-void Graph::print_nodes()
-{
-	List2d<Node>* cur = this->nods.next;
-	std::cout << "\n\t--- Graf ---\n\n";
-	for (int i = 0; i < nodes_n; i++)
-	{
-		std::cout << i << " -- ";
-		nodes[i].print_node();
-	}
-	std::cout << "\n\t--- Koniec ---\n\n";
-}
-
-
-List2d<Node>* Graph::get_city_by_name(char* name)
-{
-	List2d<Node>* cur = nods.next;
-	while (cur != nullptr)
-	{
-		if (strcmp(cur->cont->name, name) == 0) 
-			return cur;
-
-		cur = cur->next;
-	}
-
-	return nullptr;
-}
-
-int Graph::get_city_node_i_by_name(char* name)
-{
-	for (int i = 0; i < nodes_n; i++)
-	{
-		if (strcmp(nodes[i].name, name) == 0) return i;
-	}
-	return -1;
-}
