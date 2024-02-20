@@ -1,32 +1,37 @@
 #include "Graph.h"
 
 Graph::Graph(int nodes_to_set)
-    :   nodes_n(nodes_to_set), 
-        nodes_hashtable(CStringHashTable<Node>(nodes_to_set)),
-        nodes_array(new Node*[nodes_to_set])
+    :   nodesNr(nodes_to_set), 
+        nodesNamesHashtable(CStringHashTable<Node>(nodes_to_set)),
+        nodesArray(new Node*[nodes_to_set])
 {
-    for (int i = 0; i < nodes_n; i++)
+    for (int i = 0; i < nodesNr; i++)
     {
-        nodes_array[i] = nullptr;
+        nodesArray[i] = nullptr;
     }
 }
 
 Graph::~Graph()
 {
-    delete[] nodes_array;
+    delete[] nodesArray;
 }
 
-Node* Graph::insert_to_hash(Node* node)
+Node* Graph::insertNode(Node* node)
 {
-    nodes_hashtable.insert(node->getName(), node);
-    nodes_array[node->getIndex()] = node;
+    nodesNamesHashtable.insert(node->getName(), node);
+    nodesArray[node->getIndex()] = node;
 
     return node;
 }
 
-Node* Graph::get_from_hash(char* name)
+Node* Graph::getNode(char* name)
 {
-    return nodes_hashtable[name];
+    return nodesNamesHashtable[name];
+}
+
+Node* Graph::getNode(int index)
+{
+    return nodesArray[index];
 }
 
 

@@ -19,7 +19,7 @@ void load_cities(MapData& m, Graph& g)
                     {
                         stop_i = strlen(tmp_s) - 1;
 
-                        curn = g.insert_to_hash(new Node(tmp_s, k));
+                        curn = g.insertNode(new Node(tmp_s, k));
                         register_star(m, g, curn, i, j, strlen(tmp_s));
 
                         delete[] tmp_s;
@@ -311,8 +311,8 @@ void read_flight(Graph& g)
             {
                 flight_time = atoi(flight_time_substring);              
 
-                hstart_city = g.get_from_hash(start_city_substring);
-                hend_city = g.get_from_hash(end_city_substring);
+                hstart_city = g.getNode(start_city_substring);
+                hend_city = g.getNode(end_city_substring);
 
                 if (hstart_city != nullptr && hend_city != nullptr && flight_time > 0)
                 {

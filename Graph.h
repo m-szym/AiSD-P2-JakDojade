@@ -3,22 +3,20 @@
 #include "CStringHashTable.hpp"
 #include "Node.h"
 
-
-
 class Graph
 {
+private:
+    int nodesNr;
+    Node** nodesArray;                                  //tablica wskaznikow na wezly
+    CStringHashTable<Node> nodesNamesHashtable;         //wskaźnik na tablicę mieszającą
+
 public:
-        int nodes_n;
-        Node** nodes_array;                     //tablica wskaznikow na wezly
-        CStringHashTable<Node> nodes_hashtable;      //wskaźnik na tablicę mieszającą
+    Graph(int newNodesNr);
+    ~Graph();
 
-        Node* insert_to_hash(Node* node);
-        Node* get_from_hash(char* name);
-
-        Graph(int nodes_to_set);
-        ~Graph();
-
-
+    Node* insertNode(Node* node);
+    Node* getNode(char* name);
+    Node* getNode(int index);
 };
 
 

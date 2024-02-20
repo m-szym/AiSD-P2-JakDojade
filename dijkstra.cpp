@@ -2,7 +2,7 @@
 
 void dijkstra(Graph& g, Node* startCity, Node* endCity, int mode)
 {
-    int nodes = g.nodes_n;
+    int nodes = g.nodesNr;
 
     int knownDistance[nodes]; 
     bool wasVisited[nodes];
@@ -50,7 +50,7 @@ void dijkstra(Graph& g, Node* startCity, Node* endCity, int mode)
             visitedNodes++;
         }
 
-        currentLink = g.nodes_array[k]->getLinks().getHead();
+        currentLink = g.nodesArray[k]->getLinks().getHead();
         while (currentLink != nullptr)
         {
             tmpEnd = currentLink->getData()->getEndNode()->getIndex();
@@ -98,7 +98,7 @@ void dijkstra(Graph& g, Node* startCity, Node* endCity, int mode)
             while (c != nullptr)
             {
                 if (c != nullptr)
-                    std::cout << g.nodes_array[c->getData()]->getName() << " ";
+                    std::cout << g.nodesArray[c->getData()]->getName() << " ";
 
                 c = c->getNext();
             }      
