@@ -53,7 +53,7 @@ void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
         link_cur = g.nodes_array[k]->links.next;
         while (link_cur != nullptr)
         {
-            tmpEnd = link_cur->cont->end_node->arr_index;
+            tmpEnd = link_cur->cont->endNode->arr_index;
 
             if (wasVisited[tmpEnd] == false)
             {

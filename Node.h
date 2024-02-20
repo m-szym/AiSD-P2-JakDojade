@@ -10,34 +10,47 @@ class Link;
 
 class Node
 {
+private:
+    char* name;
+    int arr_index;
+    List2d<Link> links;
+
 public:
-        char* name;
-        int arr_index;
-        List2d<Link> links;
+    Node();
+    Node(char* name, int index = -1);
+    ~Node();
 
-        Node();
-        Node(char* name);
-        Node(char* name, int index);
-        ~Node();
+    void print();
+    bool operator==(char* key);
 
-        Link* add_link(Link* new_link);
+    void setName(char* new_name);
+    Link* addLink(Link* new_link);
+    char* getName() { return name; }
+    int getIndex() { return arr_index; }
+    List2d<Link>* getLinks() { return &links; }
 
-        void set_name(char* new_name);
-        void print_node();
-
-        bool operator==(char* key);
+friend class Graph;
+friend class Link;
 };
 
 class Link
 {
-public:
-        int length;
-        bool special;
-        Node* start_node;
-        Node* end_node;
-        
-        Link(int new_length, Node* new_start_node, Node* new_end_node);
-        Link(int new_length, Node* new_start_node, Node* new_end_node, bool new_special);
+private:
+    int length;
+    bool special;
+    Node* startNode;
+    Node* endNode;
 
-        void print_link();
+public:
+    Link(int newLength, Node* newStartNode, Node* newEndNode, bool isSpecial = false);
+
+    void print();
+
+    int getLength() { return length; }
+    bool isSpecial() { return special; }
+    Node* getStartNode() { return startNode; }
+    Node* getEndNode() { return endNode; }
+
+friend class Node;
+friend class Graph;
 };

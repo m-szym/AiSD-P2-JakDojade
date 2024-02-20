@@ -173,8 +173,8 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             }
             else if (m.map[oi - 1][oj] == CITY_SYMBOL && m.nmap[oi - 1][oj] != nullptr)
             {
-                o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi - 1][oj]));
-                m.nmap[oi - 1][oj]->add_link(new Link(l, m.nmap[oi - 1][oj], o_start_node));
+                o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi - 1][oj]));
+                m.nmap[oi - 1][oj]->addLink(new Link(l, m.nmap[oi - 1][oj], o_start_node));
             
             }
         
@@ -195,8 +195,8 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             {
                 if (m.nmap[oi + 1][oj] != nullptr)    
                 {
-                    o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi + 1][oj]));
-                    m.nmap[oi + 1][oj]->add_link(new Link(l, m.nmap[oi + 1][oj], o_start_node));
+                    o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi + 1][oj]));
+                    m.nmap[oi + 1][oj]->addLink(new Link(l, m.nmap[oi + 1][oj], o_start_node));
 
                 
                 }
@@ -218,8 +218,8 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             {
                 if (m.nmap[oi][oj - 1] != nullptr)
                 {
-                    o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi][oj - 1]));
-                    m.nmap[oi][oj - 1]->add_link(new Link(l, m.nmap[oi][oj - 1], o_start_node));
+                    o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi][oj - 1]));
+                    m.nmap[oi][oj - 1]->addLink(new Link(l, m.nmap[oi][oj - 1], o_start_node));
                 
                 }
                         
@@ -240,8 +240,8 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             {
                 if (m.nmap[oi][oj + 1] != nullptr)    
                 {
-                    o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi][oj + 1]));
-                    m.nmap[oi][oj + 1]->add_link(new Link(l, m.nmap[oi][oj + 1], o_start_node));
+                    o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi][oj + 1]));
+                    m.nmap[oi][oj + 1]->addLink(new Link(l, m.nmap[oi][oj + 1], o_start_node));
                 
                 }
                         
@@ -316,7 +316,7 @@ void read_flight(Graph& g)
 
                 if (hstart_city != nullptr && hend_city != nullptr && flight_time > 0)
                 {
-                    hstart_city->add_link(new Link(flight_time, hstart_city, hend_city, true));
+                    hstart_city->addLink(new Link(flight_time, hstart_city, hend_city, true));
                 
                 }
                         
