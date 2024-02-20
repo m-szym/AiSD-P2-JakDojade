@@ -27,8 +27,7 @@ public:
     void setPrev(LinkedListNode* prev) { this->prev = prev; }
 
 
-    LinkedListNode* removeSelf()
-    {
+    LinkedListNode* removeSelf() {
         if (prev != nullptr)
             prev->setNext(next);
         if (next != nullptr)
@@ -51,7 +50,7 @@ private:
     int size;
 
 public:
-    LinkedList()                                        // default constructor
+    LinkedList()                                        // empty constructor
         : head(nullptr), tail(nullptr), size(0) {}
     LinkedList(T data);                                 // data constructor
     LinkedList(const LinkedList& other);                // copy constructor
