@@ -1,6 +1,6 @@
 #include "dijkstra.h"
 
-void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
+void dijkstra(Graph& g, Node* startCity, Node* endCity, int mode)
 {
     int nodes = g.nodes_n;
 
@@ -21,8 +21,8 @@ void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
         queue[i].setNode(-1, INT_MAX);
     }
 
-    int startNodeIndex = start_city_node->arr_index;
-    int endNodeIndex = end_city_node->arr_index;
+    int startNodeIndex = startCity->getIndex();
+    int endNodeIndex = endCity->getIndex();
 
     knownDistance[startNodeIndex] = 0;
 
@@ -31,7 +31,7 @@ void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
     int tmpDistance = 0;
     int tmpEnd = 0;
     int visitedNodes = 0;
-    List2d<Link>* link_cur = nullptr;
+    LinkedListNode<Link*>* currentLink = nullptr;
 
 
     queue.enque(startNodeIndex, 0);
@@ -50,17 +50,17 @@ void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
             visitedNodes++;
         }
 
-        link_cur = g.nodes_array[k]->links.next;
-        while (link_cur != nullptr)
+        currentLink = g.nodes_array[k]->getLinks().getHead();
+        while (currentLink != nullptr)
         {
-            tmpEnd = link_cur->cont->endNode->arr_index;
+            tmpEnd = currentLink->getData()->getEndNode()->getIndex();
 
             if (wasVisited[tmpEnd] == false)
             {
-                if (link_cur->cont->special)
-                    tmpDistance = knownDistance[k] + link_cur->cont->length;    
+                if (currentLink->getData()->isSpecial())
+                    tmpDistance = knownDistance[k] + currentLink->getData()->getLength();    
                 else
-                    tmpDistance = knownDistance[k] + link_cur->cont->length + 1;
+                    tmpDistance = knownDistance[k] + currentLink->getData()->getLength() + 1;
  
 
                 if (tmpDistance < knownDistance[tmpEnd])
@@ -71,7 +71,7 @@ void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
                     queue.enque(tmpEnd, tmpDistance);
                 }         
             }
-            link_cur = link_cur->next;
+            currentLink = currentLink->getNext();
         }           
     }
 
@@ -88,24 +88,20 @@ void dijkstra(Graph& g, Node* start_city_node, Node* end_city_node, int mode)
         {
             int p = previousStep[endNodeIndex];
 
-            List2dRoot<int> rec;
+            LinkedList<int> rec;
             while (previousStep[p] >= 0)
             {
-                rec.add_at_start(new int(p));
+                rec.pushFront(p);
                 p = previousStep[p];
-            
             }
-            List2d<int>* c = rec.start;
+            LinkedListNode<int>* c = rec.getHead();
             while (c != nullptr)
             {
-                if (*(c->cont) >= 0)
-                    std::cout << g.nodes_array[*(c->cont)]->name << " ";
-                c = c->next;
-            
-            }
-            rec.delete_list();
+                if (c != nullptr)
+                    std::cout << g.nodes_array[c->getData()]->getName() << " ";
 
-        
+                c = c->getNext();
+            }      
         }
         std::cout << "\n";
     
