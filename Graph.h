@@ -2,6 +2,7 @@
 
 #include "CStringHashTable.hpp"
 #include "Node.h"
+#include "MinHeapQueue.h"
 
 class Graph
 {
@@ -17,6 +18,8 @@ public:
     Node* insertNode(Node* node);
     Node* getNode(char* name);
     Node* getNode(int index);
+
+    void dijkstra(Node* startCity, Node* endCity, int mode);
 };
 
 
