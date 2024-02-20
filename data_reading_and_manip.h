@@ -9,15 +9,10 @@
 
 
 void load_cities(MapData& m, Graph& g);
-//uses read_name() and register_star()
-
-char* read_name(MapData& m, Graph& g, int oi, int oj);
-//uses count_letters()
-
-int count_letters(MapData& m, Graph& g, int oi, int oj, char direction, int count);
-
-void register_star(MapData& m, Graph& g, Node* o_start_node, int oi, int oj, int strlen);
-
+// We traverse the map (left to right, top to bottom) looking for city names (groups of allowed symbols, i.e. letters)
+// upon finding such symbol we read the entire name, create a new node and add it to graph.
+// We also mark the location of the city on the cityNodesMask layer of MapData with a pointer to the node
+// it'll be used later to find the shortest immediate path between connected cities.
 
 void find_first_level_connections(MapData& m, Graph& g);
 //uses main_bfs20()

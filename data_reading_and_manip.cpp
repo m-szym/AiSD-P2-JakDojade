@@ -1,41 +1,27 @@
 #include "data_reading_and_manip.h"
 
-void load_cities(MapData& m, Graph& g)
+bool isCityNameSymbol(char c)
 {
-    int k = 0;
-    char* tmp_s = nullptr;
-    int stop_i = 0;
-    Node* curn = nullptr;
-    for (int i = 0; i < m.height; i++)
-    {
-        for (int j = 0; j < m.width; j++)
-        {
-            if (m.map[i][j] != ROAD_SYMBOL && m.map[i][j] != EMPTY_SYMBOL && m.map[i][j] != CITY_SYMBOL)
-            {
-                if (stop_i == 0)
-                {
-                    tmp_s = read_name(m, g, i, j);
-                    if (tmp_s != nullptr)
-                    {
-                        stop_i = strlen(tmp_s) - 1;
-
-                        curn = g.insertNode(new Node(tmp_s, k));
-                        register_star(m, g, curn, i, j, strlen(tmp_s));
-
-                        delete[] tmp_s;
-                    }
-                    k++;             
-                }
-                else
-                    stop_i--;            
-            }   
-        }
-    }
+    return (c != ROAD_SYMBOL && 
+            c != EMPTY_SYMBOL && 
+            c != CITY_SYMBOL);
 }
 
-char* read_name(MapData& m, Graph& g, int oi, int oj)
+int countSymbolsOnMap(const MapData& m, int x, int y, int count)
 {
-    int letters = count_letters(m, g, oi, oj, DIR_RIGHT, 0) + 1;
+    if (x + 1 < m.width)
+    {
+        if (isCityNameSymbol(m.map[y][x + 1]))
+        {
+            return countSymbolsOnMap(m, x + 1, y, count) + 1;
+        }
+    }
+    return 0;
+}
+
+char* readNameFromMap(const MapData& m, int x, int y)
+{
+    int letters = countSymbolsOnMap(m, x, y, 0) + 1;
 
     if (letters > 0)
     {
@@ -44,11 +30,9 @@ char* read_name(MapData& m, Graph& g, int oi, int oj)
 
         for (int i = 0; i < letters; i++)
         {
-            if (m.map[oi][oj + i] != ROAD_SYMBOL && 
-                m.map[oi][oj + i] != EMPTY_SYMBOL && 
-                m.map[oi][oj + i] != CITY_SYMBOL)    
+            if (isCityNameSymbol(m.map[y][x + i]))  
             {
-                name[i] = m.map[oi][oj + i];
+                name[i] = m.map[y][x + i];
             }     
         }
         return name;
@@ -56,61 +40,23 @@ char* read_name(MapData& m, Graph& g, int oi, int oj)
     return nullptr;
 }
 
-int count_letters(MapData& m, Graph& g, int oi, int oj, char direction, int count)
+void markCity(MapData& m, Node* node, int nameStartX, int nameStartY, int nameLen)
 {
-    if (direction == DIR_LEFT)
-    {
-        if (oj - 1 >= 0)
-        {
-            if (m.map[oi][oj - 1] != ROAD_SYMBOL && 
-                m.map[oi][oj - 1] != EMPTY_SYMBOL && 
-                m.map[oi][oj - 1] != CITY_SYMBOL)
-            {
-                return count_letters(m, g, oi, oj - 1, direction, count) + 1;
-            }
-            else
-                return 0;
-        }
-    
-    }
-    else if (direction == DIR_RIGHT)
-    {
-        if (oj + 1 < m.width)
-        {
-            if (m.map[oi][oj + 1] != ROAD_SYMBOL 
-                && m.map[oi][oj + 1] != EMPTY_SYMBOL 
-                && m.map[oi][oj + 1] != CITY_SYMBOL)
-            {
-                return count_letters(m, g, oi, oj + 1, direction, count) + 1;
-            
-            }
-            else
-                return 0;
-        
-        }
-    
-    }
-
-    return 0;
-}
-
-void register_star(MapData& m, Graph& g, Node* o_start_node, int oi, int oj, int strlen)
-{
-    for (int c = 0; c < strlen; c += strlen - 1)
+    for (int c = 0; c < nameLen; c += nameLen - 1)
     {
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
-                if (i == 0 && j == 0) continue;
+                if (i == 0 && j == 0) 
+                    continue;
 
-                if (m.out_of_map_coords(oi + i, oj + c + j, DIR_UP) == false)
+                if (!m.out_of_map(nameStartY + i, nameStartX + c + j))
                 {
-                    if (m.map[oi + i][oj + c + j] == CITY_SYMBOL)
+                    if (m.map[nameStartY + i][nameStartX + c + j] == CITY_SYMBOL)
                     {
-                        m.nmap[oi + i][oj + c + j] = o_start_node;
+                        m.cityNodesMask[nameStartY + i][nameStartX + c + j] = node;
                         return;
-                    
                     }
                                 
                 }
@@ -122,6 +68,43 @@ void register_star(MapData& m, Graph& g, Node* o_start_node, int oi, int oj, int
     }
 }
 
+void load_cities(MapData& m, Graph& g)
+{
+    int nodeNr = 0;
+    char* nodeName = nullptr;
+    int lettersToSkip = 0;
+    Node* newNode = nullptr;
+
+    for (int i = 0; i < m.height; i++)
+    {
+        for (int j = 0; j < m.width; j++)
+        {
+            if (isCityNameSymbol(m.map[i][j]))
+            {
+                if (lettersToSkip == 0)
+                {
+                    nodeName = readNameFromMap(m, j, i);
+                    if (nodeName != nullptr)
+                    {
+                        lettersToSkip = strlen(nodeName) - 1;
+
+                        newNode = new Node(nodeName, nodeNr); 
+                        g.insertNode(newNode);
+                        markCity(m, newNode, j, i, strlen(nodeName));
+
+                        delete[] nodeName;
+                    }
+                    nodeNr++;             
+                }
+                else
+                    lettersToSkip--;            
+            }   
+        }
+    }
+}
+
+
+
 
 
 void find_first_level_connections(MapData& m, Graph& g)
@@ -130,9 +113,9 @@ void find_first_level_connections(MapData& m, Graph& g)
     {
         for (int j = 0; j < m.width; j++)
         {
-            if (m.map[i][j] == CITY_SYMBOL && m.nmap[i][j] != nullptr)
+            if (m.map[i][j] == CITY_SYMBOL && m.cityNodesMask[i][j] != nullptr)
             {
-                main_bfs20(m, m.nmap[i][j], i, j);
+                main_bfs20(m, m.cityNodesMask[i][j], i, j);
             
             }
                 
@@ -171,10 +154,10 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 update_skipper(m.width, qCi, qCj);
             
             }
-            else if (m.map[oi - 1][oj] == CITY_SYMBOL && m.nmap[oi - 1][oj] != nullptr)
+            else if (m.map[oi - 1][oj] == CITY_SYMBOL && m.cityNodesMask[oi - 1][oj] != nullptr)
             {
-                o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi - 1][oj]));
-                m.nmap[oi - 1][oj]->addLink(new Link(l, m.nmap[oi - 1][oj], o_start_node));
+                o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi - 1][oj]));
+                m.cityNodesMask[oi - 1][oj]->addLink(new Link(l, m.cityNodesMask[oi - 1][oj], o_start_node));
             
             }
         
@@ -193,10 +176,10 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             }
             else if (m.map[oi + 1][oj] == CITY_SYMBOL)
             {
-                if (m.nmap[oi + 1][oj] != nullptr)    
+                if (m.cityNodesMask[oi + 1][oj] != nullptr)    
                 {
-                    o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi + 1][oj]));
-                    m.nmap[oi + 1][oj]->addLink(new Link(l, m.nmap[oi + 1][oj], o_start_node));
+                    o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi + 1][oj]));
+                    m.cityNodesMask[oi + 1][oj]->addLink(new Link(l, m.cityNodesMask[oi + 1][oj], o_start_node));
 
                 
                 }
@@ -216,10 +199,10 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             }
             else if (m.map[oi][oj - 1] == CITY_SYMBOL)
             {
-                if (m.nmap[oi][oj - 1] != nullptr)
+                if (m.cityNodesMask[oi][oj - 1] != nullptr)
                 {
-                    o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi][oj - 1]));
-                    m.nmap[oi][oj - 1]->addLink(new Link(l, m.nmap[oi][oj - 1], o_start_node));
+                    o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi][oj - 1]));
+                    m.cityNodesMask[oi][oj - 1]->addLink(new Link(l, m.cityNodesMask[oi][oj - 1], o_start_node));
                 
                 }
                         
@@ -238,10 +221,10 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
             }
             else if (m.map[oi][oj + 1] == CITY_SYMBOL)
             {
-                if (m.nmap[oi][oj + 1] != nullptr)    
+                if (m.cityNodesMask[oi][oj + 1] != nullptr)    
                 {
-                    o_start_node->addLink(new Link(l, o_start_node, m.nmap[oi][oj + 1]));
-                    m.nmap[oi][oj + 1]->addLink(new Link(l, m.nmap[oi][oj + 1], o_start_node));
+                    o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi][oj + 1]));
+                    m.cityNodesMask[oi][oj + 1]->addLink(new Link(l, m.cityNodesMask[oi][oj + 1], o_start_node));
                 
                 }
                         
