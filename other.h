@@ -7,5 +7,3 @@
 
 
 void do_command(Graph& g);
-
-

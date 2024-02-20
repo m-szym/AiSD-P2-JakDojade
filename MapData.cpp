@@ -42,8 +42,10 @@ MapData* MapData::load()
 
             rvis2[i][j] = -1;
             nmap[i][j] = nullptr;
-        }
-    }
+        
+}
+    
+}
 
     return this;
 }
@@ -57,7 +59,8 @@ MapData::~MapData()
         delete[] nmap[i];
         delete[] rvis2[i];
         delete[] x[i];
-    }
+    
+}
     delete[] map;
 
     delete[] nmap;

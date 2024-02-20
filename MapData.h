@@ -50,8 +50,8 @@ struct MapData
         else return false;
         //}
 
-        return true;    //b³¹d jakiœ
-    }
+        return true;    //bÅ‚Ä…d jakiÅ›
+    
+}
 
 };
-

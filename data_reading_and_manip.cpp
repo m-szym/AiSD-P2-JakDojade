@@ -22,15 +22,13 @@ void load_cities(MapData& m, Graph& g)
                         curn = g.insert_to_hash(new Node(tmp_s, k));
                         register_star(m, g, curn, i, j, strlen(tmp_s));
 
-
                         delete[] tmp_s;
                     }
-                    k++;
-
+                    k++;             
                 }
                 else
-                    stop_i--;
-            }
+                    stop_i--;            
+            }   
         }
     }
 }
@@ -51,11 +49,10 @@ char* read_name(MapData& m, Graph& g, int oi, int oj)
                 m.map[oi][oj + i] != CITY_SYMBOL)    
             {
                 name[i] = m.map[oi][oj + i];
-            }
+            }     
         }
         return name;
     }
-
     return nullptr;
 }
 
@@ -74,6 +71,7 @@ int count_letters(MapData& m, Graph& g, int oi, int oj, char direction, int coun
             else
                 return 0;
         }
+    
     }
     else if (direction == DIR_RIGHT)
     {
@@ -84,10 +82,13 @@ int count_letters(MapData& m, Graph& g, int oi, int oj, char direction, int coun
                 && m.map[oi][oj + 1] != CITY_SYMBOL)
             {
                 return count_letters(m, g, oi, oj + 1, direction, count) + 1;
+            
             }
             else
                 return 0;
+        
         }
+    
     }
 
     return 0;
@@ -109,10 +110,15 @@ void register_star(MapData& m, Graph& g, Node* o_start_node, int oi, int oj, int
                     {
                         m.nmap[oi + i][oj + c + j] = o_start_node;
                         return;
+                    
                     }
+                                
                 }
+                        
             }
+                
         }
+        
     }
 }
 
@@ -127,8 +133,11 @@ void find_first_level_connections(MapData& m, Graph& g)
             if (m.map[i][j] == CITY_SYMBOL && m.nmap[i][j] != nullptr)
             {
                 main_bfs20(m, m.nmap[i][j], i, j);
+            
             }
+                
         }
+        
     }
 }
 
@@ -160,12 +169,15 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 m.rvis2[oi - 1][oj] = visi;
                 set_road_tile(m.x, qCi, qCj, oi - 1, oj, l + 1);
                 update_skipper(m.width, qCi, qCj);
+            
             }
             else if (m.map[oi - 1][oj] == CITY_SYMBOL && m.nmap[oi - 1][oj] != nullptr)
             {
                 o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi - 1][oj]));
                 m.nmap[oi - 1][oj]->add_link(new Link(l, m.nmap[oi - 1][oj], o_start_node));
+            
             }
+        
         }
 
         if (oi + 1 < m.height)
@@ -177,6 +189,7 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 set_road_tile(m.x, qCi, qCj, oi + 1, oj, l + 1);
                 update_skipper(m.width, qCi, qCj);
 
+            
             }
             else if (m.map[oi + 1][oj] == CITY_SYMBOL)
             {
@@ -185,8 +198,11 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                     o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi + 1][oj]));
                     m.nmap[oi + 1][oj]->add_link(new Link(l, m.nmap[oi + 1][oj], o_start_node));
 
+                
                 }
+            
             }
+                
         }
 
         if (oj - 1 >= 0)
@@ -196,6 +212,7 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 m.rvis2[oi][oj - 1] = visi;
                 set_road_tile(m.x, qCi, qCj, oi, oj - 1, l + 1);
                 update_skipper(m.width, qCi, qCj);
+            
             }
             else if (m.map[oi][oj - 1] == CITY_SYMBOL)
             {
@@ -203,8 +220,11 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 {
                     o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi][oj - 1]));
                     m.nmap[oi][oj - 1]->add_link(new Link(l, m.nmap[oi][oj - 1], o_start_node));
+                
                 }
+                        
             }
+                
         }
 
         if (oj + 1 < m.width)
@@ -214,6 +234,7 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 m.rvis2[oi][oj + 1] = visi;
                 set_road_tile(m.x, qCi, qCj, oi, oj + 1, l + 1);
                 update_skipper(m.width, qCi, qCj);
+            
             }
             else if (m.map[oi][oj + 1] == CITY_SYMBOL)
             {
@@ -221,9 +242,13 @@ void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node
                 {
                     o_start_node->add_link(new Link(l, o_start_node, m.nmap[oi][oj + 1]));
                     m.nmap[oi][oj + 1]->add_link(new Link(l, m.nmap[oi][oj + 1], o_start_node));
+                
                 }
+                        
             }
+                
         }
+        
     }
 
     ++visi;
@@ -236,6 +261,7 @@ void update_skipper(int inner_limit, int& outer, int& inner)
     {
         ++outer;
         inner = 0;
+    
     }
 }
 
@@ -249,6 +275,7 @@ void read_flights(Graph& g)
     {
         read_flight(g);
         flights--;
+    
     }
 }
 
@@ -259,6 +286,7 @@ void read_flight(Graph& g)
     for (int i = 0; i < BASE_STRING_BUFFER_SIZE; i++)
     {
         buff[i] = '\0';
+    
     }
 
     char* raw_string = fgets(buff, BASE_STRING_BUFFER_SIZE, stdin);
@@ -289,12 +317,16 @@ void read_flight(Graph& g)
                 if (hstart_city != nullptr && hend_city != nullptr && flight_time > 0)
                 {
                     hstart_city->add_link(new Link(flight_time, hstart_city, hend_city, true));
+                
                 }
+                        
             }
+                
         }
+        
     }
+
     delete buff;
-    //free(raw_string);
 }
 
 
@@ -332,18 +364,25 @@ char* read_flight_declaration()
                     {
                         flight_declaration = string_buffer;
                         flight_declaration[number_of_chars_read - 1] = (char)current_char;
+                    
                     }
+                                
                 }
                 else
                 {
                     if (flight_declaration != NULL)
                     {
                         flight_declaration[number_of_chars_read - 1] = (char)current_char;
+                        
                     }
+                                
                 }
+                        
             }
+                
         }
-    };
+        
+    }
 
     if (flight_declaration != NULL) flight_declaration[number_of_chars_read] = '\0';
     return flight_declaration;

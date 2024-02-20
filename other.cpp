@@ -20,7 +20,8 @@ char* read_command()
         {
             if (not_EOF_chars_read == 0)
                 break;
-        }
+        
+}
         else not_EOF_chars_read++;
 
         if (!(current_char == '\n' || current_char == NULL || current_char == '\x00' || current_char == '\t' || current_char < ' '))
@@ -38,18 +39,25 @@ char* read_command()
                     {
                         raw_command = string_buffer;
                         raw_command[number_of_chars_read - 1] = (char)current_char;
-                    }
-                }
+                    
+}
+                
+}
                 else
                 {
                     if (raw_command != NULL)
                     {
                         raw_command[number_of_chars_read - 1] = (char)current_char;
-                    }
-                }
-            }
-        }
-    };
+                    
+}
+                
+}
+            
+}
+        
+}
+    
+};
 
     if (raw_command != NULL) raw_command[number_of_chars_read] = '\0';
     return raw_command;
@@ -92,12 +100,15 @@ void do_command(Graph& g)
                 hend_city = g.get_from_hash(end_city_substring);
 
                 if (hstart_city != nullptr && hend_city != nullptr)
-                    my_dijkstra5(g, hstart_city, hend_city, mode_i);
+                    dijkstra(g, hstart_city, hend_city, mode_i);
 
-            }
-        }
+            
+}
+        
+}
 
-    }
+    
+}
 
     free(raw_string);
 }
