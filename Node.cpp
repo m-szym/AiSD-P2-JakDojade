@@ -50,15 +50,6 @@ void Node::print()
     }
 }
 
-bool Node::operator==(char* key)
-{
-    long long hashedName = hash_string(this->name);
-    long long hashedKey = hash_string(key);
-
-    return hashedKey == hashedName;
-}
-
-
 
 Link::Link(int newLength, Node* newStartNode, Node* newEndNode, bool isSpecial = false)
     : length(newLength), startNode(newStartNode), endNode(newEndNode), special(isSpecial)

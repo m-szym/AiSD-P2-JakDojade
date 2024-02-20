@@ -21,7 +21,6 @@ public:
     ~Node();
 
     void print();
-    bool operator==(char* key);
 
     void setName(char* newName);
     Link* addLink(Link* newLink);
