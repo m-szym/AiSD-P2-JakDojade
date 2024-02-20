@@ -1,4 +1,4 @@
-#include "MinHeap.h"
+#include "MinHeapQueue.h"
 
 bool operator<(MinHeapNode n1, MinHeapNode n2)
 {
