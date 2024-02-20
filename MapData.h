@@ -17,8 +17,7 @@ struct MapData
     char** map;
 
     Node*** cityNodesMask;
-    int** rvis2;
-    RoadTile** x;
+    int** lastVisitCycleNr;
 
     MapData();
     MapData* load();

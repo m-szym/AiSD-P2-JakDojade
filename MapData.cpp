@@ -2,7 +2,7 @@
 
 MapData::MapData()
     :   height(0), width(0), citiesNr(0), road_tiles(0), 
-        map(nullptr), cityNodesMask(nullptr), rvis2(nullptr), x(nullptr)
+        map(nullptr), cityNodesMask(nullptr), lastVisitCycleNr(nullptr), x(nullptr)
 {}
 
 MapData* MapData::load()
@@ -12,15 +12,13 @@ MapData* MapData::load()
     map = new char* [height];
 
     cityNodesMask = new Node * *[height];
-    rvis2 = new int* [height];
-    x = new RoadTile * [height];
+    lastVisitCycleNr = new int* [height];
 
     for (int i = 0; i < height; i++)
     {
         map[i] = new char[width];
 
-        x[i] = new RoadTile[width];
-        rvis2[i] = new int[width];
+        lastVisitCycleNr[i] = new int[width];
         cityNodesMask[i] = new Node * [width];
 
         for (int j = 0; j < width; j++)
@@ -31,7 +29,7 @@ MapData* MapData::load()
             else if (map[i][j] == ROAD_SYMBOL) 
                 road_tiles++;
 
-            rvis2[i][j] = -1;
+            lastVisitCycleNr[i][j] = -1;
             cityNodesMask[i][j] = nullptr; 
         }   
     }
@@ -45,13 +43,12 @@ MapData::~MapData()
     {
         delete[] map[i];
         delete[] cityNodesMask[i];
-        delete[] rvis2[i];
-        delete[] x[i];
+        delete[] lastVisitCycleNr[i];
     }
 
     delete[] map;
     delete[] cityNodesMask;
-    delete[] rvis2;
+    delete[] lastVisitCycleNr;
     delete[] x;
 }
 

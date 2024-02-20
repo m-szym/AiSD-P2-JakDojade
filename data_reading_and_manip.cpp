@@ -105,148 +105,142 @@ void load_cities(MapData& m, Graph& g)
 
 
 
-
-
-void find_first_level_connections(MapData& m, Graph& g)
+struct XYZ
 {
+    int x, y, z;
+};
+
+XYZ xyz_pack(int x, int y, int z)
+{
+    XYZ xyz;
+    xyz.x = x;
+    xyz.y = y;
+    xyz.z = z;
+    return xyz;
+}
+
+void xyz_unpack(const XYZ& xyz, int& x, int& y, int& z)
+{
+    x = xyz.x;
+    y = xyz.y;
+    z = xyz.z;
+}
+
+void bfs30(MapData& m, Node* startNode, XYZ* queue, XYZ start)
+{
+    static int searchCycleNr = 0;
+
+    int y = 0;
+    int x = 0;
+    int distance = 0;
+
+    
+    queue[0] = start;                            
+    int queueHead = 0;
+    int queueTail = 1;
+
+
+    while (queueHead < queueTail)
+    {
+        xyz_unpack(queue[queueHead], x, y, distance);
+        queueHead++;
+
+        if (y - 1 >= 0)
+        {
+            if (m.map[y - 1][x] == ROAD_SYMBOL && m.lastVisitCycleNr[y - 1][x] != searchCycleNr)
+            {
+                m.lastVisitCycleNr[y - 1][x] = searchCycleNr;        
+                queue[queueTail] = xyz_pack(x, y - 1, distance + 1);
+                queueTail++;
+            }
+            else if (m.map[y - 1][x] == CITY_SYMBOL && m.cityNodesMask[y - 1][x] != nullptr)
+            {
+                startNode->addLink(new Link(distance, startNode, m.cityNodesMask[y - 1][x]));
+                m.cityNodesMask[y - 1][x]->addLink(new Link(distance, m.cityNodesMask[y - 1][x], startNode));
+            }
+        }
+
+        if (y + 1 < m.height)
+        {
+            if (m.map[y + 1][x] == ROAD_SYMBOL && m.lastVisitCycleNr[y + 1][x] != searchCycleNr)
+            {
+                m.lastVisitCycleNr[y + 1][x] = searchCycleNr;
+                queue[queueTail] = xyz_pack(x, y + 1, distance + 1);
+                queueTail++;
+            }
+            else if (m.map[y + 1][x] == CITY_SYMBOL)
+            {
+                if (m.cityNodesMask[y + 1][x] != nullptr)    
+                {
+                    startNode->addLink(new Link(distance, startNode, m.cityNodesMask[y + 1][x]));
+                    m.cityNodesMask[y + 1][x]->addLink(new Link(distance, m.cityNodesMask[y + 1][x], startNode));
+                }
+            }
+        }
+
+        if (x - 1 >= 0)
+        {
+            if (m.map[y][x - 1] == ROAD_SYMBOL && m.lastVisitCycleNr[y][x - 1] != searchCycleNr)
+            {
+                m.lastVisitCycleNr[y][x - 1] = searchCycleNr;
+                queue[queueTail] = xyz_pack(x - 1, y, distance + 1);
+                queueTail++;
+            }
+            else if (m.map[y][x - 1] == CITY_SYMBOL)
+            {
+                if (m.cityNodesMask[y][x - 1] != nullptr)
+                {
+                    startNode->addLink(new Link(distance, startNode, m.cityNodesMask[y][x - 1]));
+                    m.cityNodesMask[y][x - 1]->addLink(new Link(distance, m.cityNodesMask[y][x - 1], startNode));
+                }
+            }
+        }
+
+        if (x + 1 < m.width)
+        {
+            if (m.map[y][x + 1] == ROAD_SYMBOL && m.lastVisitCycleNr[y][x + 1] != searchCycleNr)
+            {
+                m.lastVisitCycleNr[y][x + 1] = searchCycleNr;
+                queue[queueTail] = xyz_pack(x + 1, y, distance + 1);
+                queueTail++;
+            
+            }
+            else if (m.map[y][x + 1] == CITY_SYMBOL)
+            {
+                if (m.cityNodesMask[y][x + 1] != nullptr)    
+                {
+                    startNode->addLink(new Link(distance, startNode, m.cityNodesMask[y][x + 1]));
+                    m.cityNodesMask[y][x + 1]->addLink(new Link(distance, m.cityNodesMask[y][x + 1], startNode));
+                }     
+            }    
+        }
+    }
+
+    ++searchCycleNr;
+}
+// Classic BFS, but written iteratively and without real queue, using array instead.
+// The function is used to find all the cities that are directly connected to the starting city and save the data in the graph.
+// Although the function is quite convoluted recursion was unacceptable as the amount of data caused stack overflows with recurive variant,
+// and the iterative version was faster and more memory efficient. 
+// Array is used in place of queue due to the project requirements and to ensure fastest possible performance.
+// Without tuples a struct was used to quickly store and read triplets of integers.
+
+void findDirectCityConnections(MapData& m, Graph& g)
+{
+    XYZ queue[m.width * m.height];
+
     for (int i = 0; i < m.height; i++)
     {
         for (int j = 0; j < m.width; j++)
         {
             if (m.map[i][j] == CITY_SYMBOL && m.cityNodesMask[i][j] != nullptr)
             {
-                main_bfs20(m, m.cityNodesMask[i][j], i, j);
-            
-            }
-                
+                bfs30(m, m.cityNodesMask[i][j], queue, xyz_pack(j, i, 0));
+            }    
         }
-        
     }
 }
 
-void main_bfs20(MapData& m, Node* o_start_node, int start_node_i, int start_node_j)
-{
-    static int visi = 0;
-
-    int oi = 0;
-    int oj = 0;
-    int l = 0;
-
-    set_road_tile(m.x, 0, 0, start_node_i, start_node_j, 0);
-    int qCi = 0;
-    int qCj = 1;
-    int qIi = 0;
-    int qIj = 0;
-
-
-    while (qCi * m.width + qCj > qIi * m.width + qIj)
-    {
-        m.x[qIi][qIj].unload(oj, oi, l);
-        update_skipper(m.width, qIi, qIj);
-
-
-        if (oi - 1 >= 0)
-        {
-            if (m.map[oi - 1][oj] == ROAD_SYMBOL && m.rvis2[oi - 1][oj] != visi)
-            {
-                m.rvis2[oi - 1][oj] = visi;
-                set_road_tile(m.x, qCi, qCj, oi - 1, oj, l + 1);
-                update_skipper(m.width, qCi, qCj);
-            
-            }
-            else if (m.map[oi - 1][oj] == CITY_SYMBOL && m.cityNodesMask[oi - 1][oj] != nullptr)
-            {
-                o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi - 1][oj]));
-                m.cityNodesMask[oi - 1][oj]->addLink(new Link(l, m.cityNodesMask[oi - 1][oj], o_start_node));
-            
-            }
-        
-        }
-
-        if (oi + 1 < m.height)
-        {
-            if (m.map[oi + 1][oj] == ROAD_SYMBOL && m.rvis2[oi + 1][oj] != visi)
-            {
-                m.rvis2[oi + 1][oj] = visi;
-
-                set_road_tile(m.x, qCi, qCj, oi + 1, oj, l + 1);
-                update_skipper(m.width, qCi, qCj);
-
-            
-            }
-            else if (m.map[oi + 1][oj] == CITY_SYMBOL)
-            {
-                if (m.cityNodesMask[oi + 1][oj] != nullptr)    
-                {
-                    o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi + 1][oj]));
-                    m.cityNodesMask[oi + 1][oj]->addLink(new Link(l, m.cityNodesMask[oi + 1][oj], o_start_node));
-
-                
-                }
-            
-            }
-                
-        }
-
-        if (oj - 1 >= 0)
-        {
-            if (m.map[oi][oj - 1] == ROAD_SYMBOL && m.rvis2[oi][oj - 1] != visi)
-            {
-                m.rvis2[oi][oj - 1] = visi;
-                set_road_tile(m.x, qCi, qCj, oi, oj - 1, l + 1);
-                update_skipper(m.width, qCi, qCj);
-            
-            }
-            else if (m.map[oi][oj - 1] == CITY_SYMBOL)
-            {
-                if (m.cityNodesMask[oi][oj - 1] != nullptr)
-                {
-                    o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi][oj - 1]));
-                    m.cityNodesMask[oi][oj - 1]->addLink(new Link(l, m.cityNodesMask[oi][oj - 1], o_start_node));
-                
-                }
-                        
-            }
-                
-        }
-
-        if (oj + 1 < m.width)
-        {
-            if (m.map[oi][oj + 1] == ROAD_SYMBOL && m.rvis2[oi][oj + 1] != visi)
-            {
-                m.rvis2[oi][oj + 1] = visi;
-                set_road_tile(m.x, qCi, qCj, oi, oj + 1, l + 1);
-                update_skipper(m.width, qCi, qCj);
-            
-            }
-            else if (m.map[oi][oj + 1] == CITY_SYMBOL)
-            {
-                if (m.cityNodesMask[oi][oj + 1] != nullptr)    
-                {
-                    o_start_node->addLink(new Link(l, o_start_node, m.cityNodesMask[oi][oj + 1]));
-                    m.cityNodesMask[oi][oj + 1]->addLink(new Link(l, m.cityNodesMask[oi][oj + 1], o_start_node));
-                
-                }
-                        
-            }
-                
-        }
-        
-    }
-
-    ++visi;
-}
-
-void update_skipper(int inner_limit, int& outer, int& inner)
-{
-    ++inner;
-    if (inner == inner_limit)
-    {
-        ++outer;
-        inner = 0;
-    
-    }
-}
 
 
 
