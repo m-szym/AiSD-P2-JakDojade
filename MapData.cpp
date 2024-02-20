@@ -2,7 +2,7 @@
 
 MapData::MapData()
     :   height(0), width(0), citiesNr(0), road_tiles(0), 
-        map(nullptr), cityNodesMask(nullptr), lastVisitCycleNr(nullptr), x(nullptr)
+        map(nullptr), cityNodesMask(nullptr), lastVisitCycleNr(nullptr)
 {}
 
 MapData* MapData::load()
@@ -49,7 +49,6 @@ MapData::~MapData()
     delete[] map;
     delete[] cityNodesMask;
     delete[] lastVisitCycleNr;
-    delete[] x;
 }
 
 bool MapData::out_of_map(int i, int j, char direction)
