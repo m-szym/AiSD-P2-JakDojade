@@ -1,12 +1,16 @@
 #include "Node.h"
 
 Node::Node()
-    : name(nullptr), arr_index(-1)
-{}
+    : name(nullptr), index(-1), links()
+{
+    links = LinkedList<Link*>();
+}
 
 Node::Node(char* name, int index = -1)
-    : arr_index(index)
+    : index(index)
 {
+    links = LinkedList<Link*>();
+
     this->name = new char[strlen(name)+1];
     strcpy(this->name, name);
 }
@@ -14,12 +18,11 @@ Node::Node(char* name, int index = -1)
 Node::~Node()
 {
     delete[] this->name;
-    this->links.root_delete_list();
 }
 
 Link* Node::addLink(Link* new_link)
 {
-    this->links.add_after(new_link);
+    links.pushFront(new_link);
     return new_link;
 }
 
@@ -32,27 +35,27 @@ void Node::setName(char* new_name)
 
 void Node::print()
 {
-    List2d<Link>* curl = this->links.next;
+    LinkedListNode<Link*>* currentLink = links.getHead();
 
-    std::cout << "Wezeł - miasto o nazwie " << name << " o " << links.root_get_lenght() << " drogach o numerze " << arr_index << "\n";
+    std::cout << "Wezeł - miasto o nazwie " << name << " o " << links.getSize() << " drogach o numerze " << index << "\n";
     int i = 0;
-    while (curl != nullptr)
+    while (currentLink != nullptr)
     {        
         std::cout << i;
         i++;
-        curl->cont->print();
+        currentLink->print();
         
-        curl = curl->next;
+        currentLink = currentLink->getNext();
         
     }
 }
 
 bool Node::operator==(char* key)
 {
-    long long hn = hash_string(this->name);
-    long long hk = hash_string(key);
+    long long hashedName = hash_string(this->name);
+    long long hashedKey = hash_string(key);
 
-    return hk == hn;
+    return hashedKey == hashedName;
 }
 
 

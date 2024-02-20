@@ -5,6 +5,7 @@
 
 #include "List2d.h"
 #include "string_helpers.h"
+#include "LinkedList.hpp"
 
 class Link;
 
@@ -12,8 +13,8 @@ class Node
 {
 private:
     char* name;
-    int arr_index;
-    List2d<Link> links;
+    int index;
+    LinkedList<Link*> links;
 
 public:
     Node();
@@ -23,11 +24,11 @@ public:
     void print();
     bool operator==(char* key);
 
-    void setName(char* new_name);
-    Link* addLink(Link* new_link);
+    void setName(char* newName);
+    Link* addLink(Link* newLink);
     char* getName() { return name; }
-    int getIndex() { return arr_index; }
-    List2d<Link>* getLinks() { return &links; }
+    int getIndex() { return index; }
+    LinkedList<Link*>& getLinks() { return links; }
 
 friend class Graph;
 friend class Link;
