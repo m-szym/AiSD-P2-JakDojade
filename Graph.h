@@ -19,6 +19,8 @@ public:
     Node* getNode(char* name);
     Node* getNode(int index);
 
+    void dijkstra(int startNodeIndex, int endNodeIndex, int mode);
+    void dijkstra(char* startCityName, char* endCityName, int mode);
     void dijkstra(Node* startCity, Node* endCity, int mode);
 };
 

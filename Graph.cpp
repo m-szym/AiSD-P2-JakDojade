@@ -34,7 +34,23 @@ Node* Graph::getNode(int index)
     return nodesArray[index];
 }
 
+void Graph::dijkstra(char* startCityName, char* endCityName, int mode)
+{
+    int startNodeIndex = nodesNamesHashtable[startCityName]->getIndex();
+    int endNodeIndex = nodesNamesHashtable[endCityName]->getIndex();
+
+    dijkstra(startNodeIndex, endNodeIndex, mode);
+}
+
 void Graph::dijkstra(Node* startCity, Node* endCity, int mode)
+{
+    int startNodeIndex = startCity->getIndex();
+    int endNodeIndex = endCity->getIndex();
+
+    dijkstra(startNodeIndex, endNodeIndex, mode);
+}
+
+void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
 {
     int nodes = nodesNr;
 
@@ -54,9 +70,6 @@ void Graph::dijkstra(Node* startCity, Node* endCity, int mode)
         }
         queue[i].setNode(-1, INT_MAX);
     }
-
-    int startNodeIndex = startCity->getIndex();
-    int endNodeIndex = endCity->getIndex();
 
     knownDistance[startNodeIndex] = 0;
 
