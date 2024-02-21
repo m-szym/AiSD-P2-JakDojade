@@ -68,7 +68,7 @@ void markCity(MapData& m, Node* node, int nameStartX, int nameStartY, int nameLe
     }
 }
 
-void load_cities(MapData& m, Graph& g)
+void loadCities(MapData& m, Graph& g)
 {
     int nodeNr = 0;
     char* nodeName = nullptr;
@@ -242,9 +242,38 @@ void findDirectCityConnections(MapData& m, Graph& g)
 }
 
 
+void read_flight(Graph &g)
+{
+    int tokens;
+    char* flightDeclaration = readString();
+    char** flightData = tokenizeString(flightDeclaration, " ", tokens);
 
 
-void read_flights(Graph& g)
+    if (flightDeclaration != NULL && flightData != NULL)
+    {
+        if (tokens == 3)
+        {
+            if (isNumber(flightData[2]))
+            {
+                Node* startCity = g.getNode(flightData[0]);
+                Node* endCity   = g.getNode(flightData[1]);
+                int flightTime  = atoi(flightData[2]);
+
+                if (startCity != nullptr && 
+                    endCity != nullptr   && 
+                    flightTime > 0)
+                {
+                    startCity->addLink(new Link(flightTime, startCity, endCity, true));
+                }
+            }
+        }
+    }
+
+    free(flightDeclaration);
+    free(flightData);
+}
+
+void loadFlights(Graph& g)
 {
     int flights = 0;
     std::cin >> flights;
@@ -252,115 +281,47 @@ void read_flights(Graph& g)
     {
         read_flight(g);
         flights--;
-    
     }
 }
 
-void read_flight(Graph& g)
+
+void runCommand(Graph& g)
 {
-    //char* raw_string = read_flight_declaration();
-    char* buff = new char[BASE_STRING_BUFFER_SIZE];
-    for (int i = 0; i < BASE_STRING_BUFFER_SIZE; i++)
+    int tokens;
+    char* commandDeclaration = readString();
+    char** commandData = tokenizeString(commandDeclaration, " ", tokens);
+
+    if (commandDeclaration != NULL && commandData != NULL)
     {
-        buff[i] = '\0';
-    
-    }
-
-    char* raw_string = fgets(buff, BASE_STRING_BUFFER_SIZE, stdin);
-
-    char* start_city_substring = NULL;
-    char* end_city_substring = NULL;
-    char* flight_time_substring = NULL;
-
-    Node* hstart_city = nullptr;
-    Node* hend_city = nullptr;
-    int flight_time = 0;
-
-    if (raw_string != nullptr)
-    {
-        start_city_substring = strtok(raw_string, " ");
-        end_city_substring = strtok(NULL, " ");
-        flight_time_substring = strtok(NULL, " ");
-
-        if (start_city_substring != NULL && end_city_substring != NULL && flight_time_substring != NULL)
+        if (tokens == 3)
         {
-            if (is_number(flight_time_substring) == true)
+            if (isNumber(commandData[2]))
             {
-                flight_time = atoi(flight_time_substring);              
+                Node* startCity = g.getNode(commandData[0]);
+                Node* endCity   = g.getNode(commandData[1]);
+                int mode        = atoi(commandData[2]);
 
-                hstart_city = g.getNode(start_city_substring);
-                hend_city = g.getNode(end_city_substring);
-
-                if (hstart_city != nullptr && hend_city != nullptr && flight_time > 0)
+                if (startCity != nullptr && 
+                    endCity   != nullptr && 
+                    mode > 0)
                 {
-                    hstart_city->addLink(new Link(flight_time, hstart_city, hend_city, true));
-                
+                    g.dijkstra(startCity, endCity, mode);
                 }
-                        
             }
-                
         }
-        
     }
 
-    delete buff;
+    free(commandDeclaration);
+    free(commandData);
 }
 
-
-char* read_flight_declaration()
+void run(Graph& g)
 {
-    int current_char = '\0';
-    char* flight_declaration = (char*)malloc(BASE_STRING_BUFFER_SIZE * sizeof(char));
-
-    char* string_buffer = NULL;
-
-    int number_of_chars_read = 0;
-    int char_array_size = BASE_STRING_BUFFER_SIZE;
-    int not_EOF_chars_read = 0;
-
-
-    while (current_char != '\n')
+    int q = 0;
+    std::cin >> q;
+    while (q >= 0)
     {
-        current_char = getchar();
-
-        if (current_char == EOF)
-            break;
-
-        if (!( current_char < ' '))
-        {
-
-            if (current_char) {
-                number_of_chars_read++;
-
-                if (number_of_chars_read >= char_array_size)
-                {
-                    string_buffer = (char*)realloc(flight_declaration, 2 * char_array_size * sizeof(char));
-                    char_array_size = 2 * char_array_size;
-
-                    if (string_buffer != NULL)
-                    {
-                        flight_declaration = string_buffer;
-                        flight_declaration[number_of_chars_read - 1] = (char)current_char;
-                    
-                    }
-                                
-                }
-                else
-                {
-                    if (flight_declaration != NULL)
-                    {
-                        flight_declaration[number_of_chars_read - 1] = (char)current_char;
-                        
-                    }
-                                
-                }
-                        
-            }
-                
-        }
-        
+        runCommand(g);
+        q--;  
     }
-
-    if (flight_declaration != NULL) flight_declaration[number_of_chars_read] = '\0';
-    return flight_declaration;
 }
