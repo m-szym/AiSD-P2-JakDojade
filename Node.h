@@ -8,6 +8,7 @@
 
 class Link;
 
+
 class Node
 {
 private:
@@ -24,6 +25,7 @@ public:
 
     void setName(char* newName);
     Link* addLink(Link* newLink);
+    
     char* getName() { return name; }
     int getIndex() { return index; }
     LinkedList<Link*>& getLinks() { return links; }
@@ -31,6 +33,7 @@ public:
 friend class Graph;
 friend class Link;
 };
+
 
 class Link
 {

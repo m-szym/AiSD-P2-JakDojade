@@ -50,79 +50,8 @@ void Graph::dijkstra(Node* startCity, Node* endCity, int mode)
     dijkstra(startNodeIndex, endNodeIndex, mode);
 }
 
-void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
+void Graph::printDijkstraResults(int previousStep[], int knownDistance[], int endNodeIndex, int mode)
 {
-    int nodes = nodesNr;
-
-    int knownDistance[nodes]; 
-    bool wasVisited[nodes];
-    int previousStep[nodes];
-
-    MinHeapQueue queue = MinHeapQueue(2*nodes);
-
-    for (int i = 0; i < 2*nodes; i++)
-    {
-        if (i < nodes)
-        {
-            knownDistance[i] = INT_MAX;
-            previousStep[i] = -1;
-            wasVisited[i] = false;
-        }
-        queue[i].setNode(-1, INT_MAX);
-    }
-
-    knownDistance[startNodeIndex] = 0;
-
-
-    int k = 0;
-    int tmpDistance = 0;
-    int tmpEnd = 0;
-    int visitedNodes = 0;
-    LinkedListNode<Link*>* currentLink = nullptr;
-
-
-    queue.enque(startNodeIndex, 0);
-
-    while(queue.getQueueSize() >= 0)
-    {
-        k = queue[queue.top()].getIndex();
-        queue.deque();
-
-        if (k == endNodeIndex) 
-            break;
-
-        if (wasVisited[k] == false)
-        {
-            wasVisited[k] = true;
-            visitedNodes++;
-        }
-
-        currentLink = nodesArray[k]->getLinks().getHead();
-        while (currentLink != nullptr)
-        {
-            tmpEnd = currentLink->getData()->getEndNode()->getIndex();
-
-            if (wasVisited[tmpEnd] == false)
-            {
-                if (currentLink->getData()->isSpecial())
-                    tmpDistance = knownDistance[k] + currentLink->getData()->getLength();    
-                else
-                    tmpDistance = knownDistance[k] + currentLink->getData()->getLength() + 1;
- 
-
-                if (tmpDistance < knownDistance[tmpEnd])
-                {
-                    knownDistance[tmpEnd] = tmpDistance;
-                    previousStep[tmpEnd] = k;
-
-                    queue.enque(tmpEnd, tmpDistance);
-                }         
-            }
-            currentLink = currentLink->getNext();
-        }           
-    }
-
-
     if (mode == 0)
     {
         std::cout << knownDistance[endNodeIndex] << "\n";
@@ -141,6 +70,7 @@ void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
                 rec.pushFront(p);
                 p = previousStep[p];
             }
+
             LinkedListNode<int>* c = rec.getHead();
             while (c != nullptr)
             {
@@ -151,7 +81,72 @@ void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
             }      
         }
         std::cout << "\n";
-    
     }
+}
+
+void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
+{
+    int knownDistance[nodesNr]; 
+    bool wasVisited[nodesNr];
+    int previousStep[nodesNr];
+    MinHeapQueue queue = MinHeapQueue(2*nodesNr);
+
+    for (int i = 0; i < 2*nodesNr; i++)
+    {
+        if (i < nodesNr)
+        {
+            knownDistance[i] = INT_MAX;
+            previousStep[i] = -1;
+            wasVisited[i] = false;
+        }
+        queue[i].setNode(-1, INT_MAX);
+    }
+    knownDistance[startNodeIndex] = 0;
+    queue.enque(startNodeIndex, 0);
+
+    int currentNodeIndex = 0;
+    int tmpDistance = 0;
+    int tmpEnd = 0;
+    LinkedListNode<Link*>* currentLink = nullptr;
+
+
+    while(queue.getQueueSize() >= 0)
+    {
+        currentNodeIndex = queue[queue.top()].getIndex();
+        queue.deque();
+
+        if (currentNodeIndex == endNodeIndex) 
+            break;
+
+        if (wasVisited[currentNodeIndex] == false)
+            wasVisited[currentNodeIndex] = true;
+
+
+        currentLink = nodesArray[currentNodeIndex]->getLinks().getHead();
+        while (currentLink != nullptr)
+        {
+            tmpEnd = currentLink->getData()->getEndNode()->getIndex();
+
+            if (wasVisited[tmpEnd] == false)
+            {
+                tmpDistance = knownDistance[currentNodeIndex] + currentLink->getData()->getLength();
+
+                if (!currentLink->getData()->isSpecial())
+                    tmpDistance += 1;
+ 
+
+                if (tmpDistance < knownDistance[tmpEnd])
+                {
+                    knownDistance[tmpEnd] = tmpDistance;
+                    previousStep[tmpEnd] = currentNodeIndex;
+
+                    queue.enque(tmpEnd, tmpDistance);
+                }         
+            }
+            currentLink = currentLink->getNext();
+        }           
+    }
+
+    printDijkstraResults(previousStep, knownDistance, endNodeIndex, mode);
 }
 

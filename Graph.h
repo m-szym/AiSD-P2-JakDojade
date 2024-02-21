@@ -8,9 +8,11 @@ class Graph
 {
 private:
     int nodesNr;
-    Node** nodesArray;                                  //tablica wskaznikow na wezly
-    CStringHashTable<Node> nodesNamesHashtable;         //wskaźnik na tablicę mieszającą
+    Node** nodesArray;                                  
+    CStringHashTable<Node> nodesNamesHashtable;  
 
+
+    void printDijkstraResults(int previousStep[], int knownDistance[], int endNodeIndex, int mode);
 public:
     Graph(int newNodesNr);
     ~Graph();
@@ -23,7 +25,3 @@ public:
     void dijkstra(char* startCityName, char* endCityName, int mode);
     void dijkstra(Node* startCity, Node* endCity, int mode);
 };
-
-
-
-

@@ -7,6 +7,10 @@
 #include "Graph.h"
 #include "string_helpers.h"
 
+const char CITY_SYMBOL = '*';
+const char ROAD_SYMBOL = '#';
+const char EMPTY_SYMBOL = '.';
+
 
 void loadCities(MapData& m, Graph& g);
 // We traverse the map (left to right, top to bottom) looking for city names (groups of allowed symbols, i.e. letters)

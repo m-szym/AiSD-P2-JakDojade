@@ -104,7 +104,6 @@ void loadCities(MapData& m, Graph& g)
 }
 
 
-
 struct XYZ
 {
     int x, y, z;
