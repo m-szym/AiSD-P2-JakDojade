@@ -1,19 +1,9 @@
 #include "MapData.h"
 
 MapData::MapData()
-{
-    this->height = 0;
-    this->width = 0;
-
-    this->cities = 0;
-    this->road_tiles = 0;
-
-    this->map = nullptr;
-
-    this->nmap = nullptr;
-    this->rvis2 = nullptr;
-    this->x = nullptr;
-}
+    :   height(0), width(0), citiesNr(0), road_tiles(0), 
+        map(nullptr), cityNodesMask(nullptr), lastVisitCycleNr(nullptr)
+{}
 
 MapData* MapData::load()
 {
@@ -21,28 +11,27 @@ MapData* MapData::load()
 
     map = new char* [height];
 
-    nmap = new Node * *[height];
-    rvis2 = new int* [height];
-    x = new RoadTile * [height];
+    cityNodesMask = new Node * *[height];
+    lastVisitCycleNr = new int* [height];
 
     for (int i = 0; i < height; i++)
     {
         map[i] = new char[width];
 
-        x[i] = new RoadTile[width];
-        rvis2[i] = new int[width];
-        nmap[i] = new Node * [width];
+        lastVisitCycleNr[i] = new int[width];
+        cityNodesMask[i] = new Node * [width];
+
         for (int j = 0; j < width; j++)
         {
             std::cin >> map[i][j];
             if (map[i][j] == CITY_SYMBOL)      
-                cities++; 
+                citiesNr++; 
             else if (map[i][j] == ROAD_SYMBOL) 
                 road_tiles++;
 
-            rvis2[i][j] = -1;
-            nmap[i][j] = nullptr;
-        }
+            lastVisitCycleNr[i][j] = -1;
+            cityNodesMask[i][j] = nullptr; 
+        }   
     }
 
     return this;
@@ -53,16 +42,13 @@ MapData::~MapData()
     for (int i = 0; i < height; i++)
     {
         delete[] map[i];
-
-        delete[] nmap[i];
-        delete[] rvis2[i];
-        delete[] x[i];
+        delete[] cityNodesMask[i];
+        delete[] lastVisitCycleNr[i];
     }
-    delete[] map;
 
-    delete[] nmap;
-    delete[] rvis2;
-    delete[] x;
+    delete[] map;
+    delete[] cityNodesMask;
+    delete[] lastVisitCycleNr;
 }
 
 bool MapData::out_of_map(int i, int j, char direction)

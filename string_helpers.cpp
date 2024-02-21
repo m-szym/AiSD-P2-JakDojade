@@ -1,32 +1,107 @@
 #include "string_helpers.h"
 
-bool is_number(char* string)
+bool isNumber(char* string)
 {
     int number_characters = 0;
 
     for (int i = 0; i < strlen(string); ++i)
     {
         if (isdigit(string[i]) != 0 || string[i] == '\n') number_characters++;
-    }
+    
+}
 
     if (number_characters == strlen(string)) return true;
     else return false;
 }
 
-long long hash_string(char* key)
+
+bool isLegalChar(char c)
 {
-	int i = 0;
-	int powered_prime = STRING_HASH_BASE_PRIME;
-	long long hash = 0;	
-
-	while (i < STRING_HASH_MAX_KEY_SIZE)
-	{
-		if (key[i] == '\0') return hash;
-
-		hash = (hash + (key[i] - STRING_HASH_FLOOR_CHAR + 1) * powered_prime) % STRING_HASH_PRIME_LIMITER;
-		powered_prime = (powered_prime * STRING_HASH_BASE_PRIME) % STRING_HASH_PRIME_LIMITER;
-		++i;
-	}
-
-	return hash;
+    if (c == '\n' || c == NULL || c == '\x00' || c == '\t' || c < ' ')
+        return false;
+    else
+        return true;
 }
+
+bool reachedEOF(char currentChar, int& notEOF)
+{
+    if (currentChar == EOF)
+    {
+        if (notEOF == 0)
+            return true;
+    }
+    else 
+    {
+        notEOF++;
+        return false;
+    }
+}
+
+char* resizeCString(char* string, int newSize)
+{
+    char* newString = (char*)realloc(string, newSize * sizeof(char));
+    
+    if (newString == NULL)
+    {
+        free(string);
+        return NULL;
+    }
+    else
+        return newString;
+}
+
+char* readString()
+{
+    char currentChar = '\0';
+    char* buffer = (char*)malloc(BASE_STRING_BUFFER_SIZE * sizeof(char));
+
+    int charsRead = 0;
+    int bufferSize = BASE_STRING_BUFFER_SIZE;
+    int notEOFChars = 0;
+
+    while (currentChar != '\n')
+    {
+        currentChar = getchar();
+
+        if (reachedEOF(currentChar, notEOFChars))
+            break;
+
+        if (isLegalChar(currentChar))
+        {
+            charsRead++;
+            if (charsRead >= bufferSize)
+            {
+                bufferSize = 2 * bufferSize;
+                buffer = resizeCString(buffer, bufferSize);
+            }
+
+            if (buffer != NULL)
+                buffer[charsRead - 1] = (char)currentChar;
+            else
+                break;   
+        }
+    }
+
+    if (buffer != NULL) 
+        buffer[charsRead] = '\0';
+
+    return buffer;
+}
+
+char** tokenizeString(char* string, char* delimiter, int& tokens)
+{
+    char** tokenArray = (char**)malloc(tokens * sizeof(char*));
+    char* token = strtok(string, delimiter);
+    tokens = 0;
+
+    while (token != NULL)
+    {
+        tokenArray[tokens] = token;
+        token = strtok(NULL, delimiter);
+        tokens++;
+    }
+
+    return tokenArray;
+}
+
+

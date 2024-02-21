@@ -2,9 +2,14 @@
 
 #include <cstring>
 #include <cctype>
+#include <cstdio>
+#include <cstdlib>
 
-#include "Constants.h"
+const int BASE_STRING_BUFFER_SIZE = 32;
 
-bool is_number(char* string);
+bool isNumber(char* string);
 
-long long hash_string(char* key);
+char* readString();
+
+char** tokenizeString(char* string, char* delimiter, int& tokens);
+

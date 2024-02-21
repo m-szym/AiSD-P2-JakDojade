@@ -1,21 +1,27 @@
 #pragma once
-#include "Node.h"
-#include <iostream>
 
+#include "CStringHashTable.hpp"
+#include "Node.h"
+#include "MinHeapQueue.h"
 
 class Graph
 {
+private:
+    int nodesNr;
+    Node** nodesArray;                                  
+    CStringHashTable<Node> nodesNamesHashtable;  
+
+
+    void printDijkstraResults(int previousStep[], int knownDistance[], int endNodeIndex, int mode);
 public:
-	int nodes_n;
-	Node* nodes;
-	List2d<Node> nods;
+    Graph(int newNodesNr);
+    ~Graph();
 
-	Graph(int nodes_to_set);
-	~Graph();
+    Node* insertNode(Node* node);
+    Node* getNode(char* name);
+    Node* getNode(int index);
 
-	void print_graph();
-	void print_nodes();
-	List2d<Node>* get_city_by_name(char* name);
-	int get_city_node_i_by_name(char* name);
+    void dijkstra(int startNodeIndex, int endNodeIndex, int mode);
+    void dijkstra(char* startCityName, char* endCityName, int mode);
+    void dijkstra(Node* startCity, Node* endCity, int mode);
 };
-

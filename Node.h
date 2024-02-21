@@ -1,36 +1,58 @@
 #pragma once
-#include "List2d.h"
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <cstring>
+
+#include "string_helpers.h"
+#include "LinkedList.hpp"
 
 class Link;
 
+
 class Node
 {
-public:
-	char* name;
-	int arr_index;
-	List2d<Link> links;
-	Node();
-	Node(char* name);
-	Node(char* name, int index);
-	~Node();
-	void set_name(char* new_name);
+private:
+    char* name;
+    int index;
+    LinkedList<Link*> links;
 
-	void print_node();
+public:
+    Node();
+    Node(char* name, int index = -1);
+    ~Node();
+
+    void print();
+
+    void setName(char* newName);
+    Link* addLink(Link* newLink);
+    
+    char* getName() { return name; }
+    int getIndex() { return index; }
+    LinkedList<Link*>& getLinks() { return links; }
+
+friend class Graph;
+friend class Link;
 };
+
 
 class Link
 {
+private:
+    int length;
+    bool special;
+    Node* startNode;
+    Node* endNode;
+
 public:
-	int length;
-	bool special;
-	Node* start_node;
-	Node* end_node;
+    Link(int newLength, Node* newStartNode, Node* newEndNode, bool isSpecial = false);
 
-	Link(int new_length, Node* new_start_node, Node* new_end_node);
-	Link(int new_length, Node* new_start_node, Node* new_end_node, bool new_special);
+    void print();
 
-	void print_link();
+    int getLength() { return length; }
+    bool isSpecial() { return special; }
+    Node* getStartNode() { return startNode; }
+    Node* getEndNode() { return endNode; }
+
+friend class Node;
+friend class Graph;
 };
-
-
