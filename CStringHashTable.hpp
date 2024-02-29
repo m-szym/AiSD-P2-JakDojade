@@ -26,29 +26,27 @@ public:
 template<typename DataT>
 size_t CStringHashTable<DataT>::hash(char* key)
 {
-    try
+   
+    if (strlen(key) > STRING_HASH_MAX_KEY_SIZE)
+        throw "Key too long";
+
+
+    int i = 0;
+    int poweredPrime = STRING_HASH_BASE_PRIME;        
+    size_t hashValue = 0;   
+
+    while (i < STRING_HASH_MAX_KEY_SIZE)
     {
-        int i = 0;
-        int poweredPrime = STRING_HASH_BASE_PRIME;
-        size_t hashValue = 0;   
-
-        while (i < STRING_HASH_MAX_KEY_SIZE)
-        {
-            if (key[i] == '\0') 
-                break;
-            hashValue = (hashValue + (key[i] - STRING_HASH_FLOOR_CHAR + 1) * poweredPrime) % STRING_HASH_PRIME_LIMITER;
-            poweredPrime = (poweredPrime * STRING_HASH_BASE_PRIME) % STRING_HASH_PRIME_LIMITER;
-            ++i;
-        }
-
-        size_t index = this->size * fmod(hashValue * HASH_PRIME, 1);
-
-        return index;
+        if (key[i] == '\0') 
+            break;
+        hashValue = (hashValue + (key[i] - STRING_HASH_FLOOR_CHAR + 1) * poweredPrime) % STRING_HASH_PRIME_LIMITER;
+        poweredPrime = (poweredPrime * STRING_HASH_BASE_PRIME) % STRING_HASH_PRIME_LIMITER;
+        ++i;
     }
-    catch (strlen(key) > STRING_HASH_MAX_KEY_SIZE)
-    {
-        std::cout << "Key too long" << std::endl;
-    }
+
+    size_t index = this->size * fmod(hashValue * HASH_PRIME, 1);
+    
+    return index;
 }
 
 template<typename DataT>
