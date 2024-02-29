@@ -20,6 +20,7 @@ struct MapData
 
     MapData();
     MapData* load();
+    void clear();
     ~MapData();
 
     bool out_of_map(int i, int j, char direction);

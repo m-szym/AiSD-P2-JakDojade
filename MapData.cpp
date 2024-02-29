@@ -37,7 +37,7 @@ MapData* MapData::load()
     return this;
 }
 
-MapData::~MapData()
+void MapData::clear()
 {
     for (int i = 0; i < height; i++)
     {
@@ -49,6 +49,16 @@ MapData::~MapData()
     delete[] map;
     delete[] cityNodesMask;
     delete[] lastVisitCycleNr;
+
+    map = nullptr;
+    cityNodesMask = nullptr;
+    lastVisitCycleNr = nullptr;
+}
+
+MapData::~MapData()
+{
+    if (map != nullptr)
+        clear();
 }
 
 bool MapData::out_of_map(int i, int j, char direction)
