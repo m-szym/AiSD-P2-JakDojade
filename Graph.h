@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CStringHashTable.hpp"
+#include "lib/CStringHashTable.hpp"
 #include "Node.h"
 #include "MinHeapQueue.h"
 

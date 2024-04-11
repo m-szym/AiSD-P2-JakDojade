@@ -19,8 +19,6 @@ private:
     size_t hash(char* key) override;
 public:
     CStringHashTable(size_t newSize);
-    CStringHashTable(const CStringHashTable& other);
-    CSstringHashTable& operator=(const CStringHashTable& other);
 };
 
 template<typename DataT>
@@ -53,5 +51,6 @@ template<typename DataT>
 CStringHashTable<DataT>::CStringHashTable(size_t newSize)
     : HashTable<char*, DataT>(newSize)
 {}
+
 
 

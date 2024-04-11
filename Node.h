@@ -4,7 +4,7 @@
 #include <cstring>
 
 #include "string_helpers.h"
-#include "LinkedList.hpp"
+#include "lib/LinkedList.hpp"
 
 class Link;
 

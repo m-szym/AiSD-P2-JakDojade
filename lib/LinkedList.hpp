@@ -5,6 +5,7 @@
 #include <iostream>
 #include <initializer_list>
 #include <stdexcept>
+#include <functional>
 
 template <typename T>
 class LinkedListNode
@@ -86,6 +87,10 @@ public:
     void remove(int index);
     void remove(T data);
     void remove(LinkedListNode<T>* node);
+
+    T getData(std::function<bool(T)> predicate);
+    void remove(std::function<bool(T)> predicate);
+
 
     void reverse();
     void swap(LinkedList& other);
@@ -363,6 +368,23 @@ void LinkedList<T>::remove(LinkedListNode<T>* node)
 }
 
 template <typename T>
+void LinkedList<T>::remove(std::function<bool(T)> predicate)
+{
+    LinkedListNode<T>* current = head;
+    while (current != nullptr)
+    {
+        if (predicate(current->getData()))
+        {
+            LinkedListNode<T>* temp = current;
+            current = current->getNext();
+            remove(temp);
+        }
+        else
+            current = current->getNext();
+    }
+}
+
+template <typename T>
 void LinkedList<T>::reverse()
 {
     LinkedListNode<T>* current = head;
@@ -426,6 +448,19 @@ void LinkedList<T>::print()
         current = current->getNext();
     }
     std::cout << std::endl;
+}
+
+
+template <typename T>
+T LinkedList<T>::getData(std::function<bool(T)> predicate) {
+    LinkedListNode<T>* current = head;
+    while (current != nullptr) {
+        if (lambda(current->getData())) {
+            return current->getData();
+        }
+        current = current->getNext();
+    }
+    return nullptr;
 }
 
 #endif // !LINKEDLIST_HPP
