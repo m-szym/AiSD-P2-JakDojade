@@ -61,7 +61,7 @@ MapData::~MapData()
         clear();
 }
 
-bool MapData::out_of_map(int i, int j, char direction)
+bool MapData::outOfMap(int i, int j, char direction)
 {
     if (direction == DIR_UP && i - 1 < 0)               return true;
     else if (direction == DIR_DOWN && i + 1 >= height)  return true;
@@ -71,7 +71,7 @@ bool MapData::out_of_map(int i, int j, char direction)
         return false;    
 }
 
-bool MapData::out_of_map(int i, int j)
+bool MapData::outOfMap(int i, int j)
 {
     if ((i < 0) || (i >= height) ||
         (j < 0) || (j >= width))

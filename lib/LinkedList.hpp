@@ -301,7 +301,7 @@ template <typename T>
 void LinkedList<T>::clear()
 {
     while (size > 0)
-        popBack();
+        delete popBack();
 }
 
 template <typename T>

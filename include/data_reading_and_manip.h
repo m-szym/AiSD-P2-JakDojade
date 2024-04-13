@@ -9,24 +9,20 @@
 #include "constanst.h"
 
 
-// We traverse the map (left to right, top to bottom) looking for city names (groups of allowed symbols, i.e. letters)
-// upon finding such symbol we read the entire name, create a new node and add it to graph.
+// We traverse the map (left to right, top to bottom) looking for city name labels (groups of allowed letters)
+// upon finding such symbol we read the entire name, create a new node and append it to the graph.
 // We also mark the location of the city on the cityNodesMask layer of MapData with a pointer to the node
-// it'll be used later to find the shortest immediate path between connected cities.
+// it'll be used later to quickly find the shortest immediate paths between cities.
 void loadCities(MapData& m, Graph& g);
-
 
 // We find direct connections between cities and add them to the graph.
 // BFS is used to traverse the map.
 void findDirectCityConnections(MapData& m, Graph& g);
 
-
-// We read the flights (directed connections between cities) from input and add them to the graph.
+// We read the flights (directed connections between city nodes) from input and add them to the directly to the graph.
 void loadFlights(Graph& g);
 
-
-// Main working part of the program.
+// Main working loop of the program.
 // We read commands, each one a pair of city names (start, end) and mode, 
 // find the shortest path between the cities and print it according to mode.
 void run(Graph& g);
-

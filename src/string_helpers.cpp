@@ -6,15 +6,14 @@ bool isNumber(char* string)
 
     for (int i = 0; i < strlen(string); ++i)
     {
-        if (isdigit(string[i]) != 0 || string[i] == '\n') number_characters++;
-    
-}
+        if (isdigit(string[i]) != 0 || string[i] == '\n') number_characters++;  
+    }
 
     if (number_characters == strlen(string)) return true;
     else return false;
 }
 
-
+// Checks if the given character is a legal character (i.e. not a control character or EOF)
 bool isLegalChar(char c)
 {
     if (c == '\n' || c == NULL || c == '\x00' || c == '\t' || c < ' ')
@@ -23,6 +22,8 @@ bool isLegalChar(char c)
         return true;
 }
 
+// Checks if the EOF has been reached and returns true if it has
+// Due to the nature of the input, the EOF is not always obvious and needs to be checked in a special way
 bool reachedEOF(char currentChar, int& notEOF)
 {
     if (currentChar == EOF)
@@ -37,6 +38,7 @@ bool reachedEOF(char currentChar, int& notEOF)
     }
 }
 
+// Uses realloc() to resize the given cstring to the newSize and returns the pointer to the new cstring
 char* resizeCString(char* string, int newSize)
 {
     char* newString = (char*)realloc(string, newSize * sizeof(char));
@@ -53,7 +55,7 @@ char* resizeCString(char* string, int newSize)
 char* readString()
 {
     char currentChar = '\0';
-    char* buffer = (char*)malloc(BASE_STRING_BUFFER_SIZE * sizeof(char));
+    char* buffer = (char*)malloc(BASE_STRING_BUFFER_SIZE * sizeof(char));   
 
     int charsRead = 0;
     int bufferSize = BASE_STRING_BUFFER_SIZE;
@@ -103,5 +105,3 @@ char** tokenizeString(char* string, char* delimiter, int& tokens)
 
     return tokenArray;
 }
-
-
