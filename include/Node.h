@@ -3,7 +3,7 @@
 
 #include <cstring>
 
-#include "string_helpers.h"
+#include "cstringHelpers.h"
 #include "../lib/LinkedList.hpp"
 
 class Link;

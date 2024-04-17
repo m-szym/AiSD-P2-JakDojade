@@ -1,4 +1,4 @@
-#include "../include/data_reading_and_manip.h"
+#include "../include/dataReadingAndManip.h"
 
 // Check if the char is a part of a city name label 
 bool isCityNameSymbol(char c)
@@ -297,34 +297,4 @@ void loadFlights(Graph& g)
         read_flight(g);
         flights--;
     }
-}
-
-void runCommand(Graph& g)
-{
-    int tokens;
-    char* commandDeclaration = readString();
-    char** commandData = tokenizeString(commandDeclaration, " ", tokens);
-
-    if (commandDeclaration != NULL && commandData != NULL)
-    {
-        if (tokens == 3)
-        {
-            if (isNumber(commandData[2]))
-            {
-                Node* startCity = g.getNode(commandData[0]);
-                Node* endCity   = g.getNode(commandData[1]);
-                int mode        = atoi(commandData[2]);
-
-                if (startCity != nullptr && 
-                    endCity   != nullptr && 
-                    mode > 0)
-                {
-                    g.dijkstra(startCity, endCity, mode);
-                }
-            }
-        }
-    }
-
-    free(commandDeclaration);
-    free(commandData);
 }

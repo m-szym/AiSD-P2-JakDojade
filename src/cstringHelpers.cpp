@@ -1,4 +1,4 @@
-#include "string_helpers.h"
+#include "../include/cstringHelpers.h"
 
 bool isNumber(char* string)
 {

@@ -1,4 +1,4 @@
-#include "MapData.h"
+#include "../include/MapData.h"
 
 MapData::MapData()
     :   height(0), width(0), citiesNr(0), road_tiles(0), 

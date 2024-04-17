@@ -5,7 +5,6 @@
 
 #include "MapData.h"
 #include "Graph.h"
-#include "string_helpers.h"
 #include "constanst.h"
 
 
@@ -22,8 +21,3 @@ void findDirectCityConnections(MapData& m, Graph& g);
 // We read the flights (directed connections between city nodes) from input and add them to the directly to the graph.
 void loadFlights(Graph& g);
 
-// Read the command declaration from input and run the command.
-// The command declaration was given in the form of "city1 city2 mode" where mode is the output mode of the command.
-// The mode must be a positive integer.
-// The function reads the declaration, checks if it's correct and if so runs the dijkstra algorithm with the given cities and output mode.
-void runCommand(Graph& g);
