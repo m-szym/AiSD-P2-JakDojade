@@ -43,8 +43,26 @@ Main goals of the project were:
 ### How does it work?
 The program first reads the map (see Map format for details) from standard input, parses it using BFS and creates a graph. 
 Then it reads additional information about flight connections between cities, which are not marked on the map, which are then also added to the graph.
+```
+MapData object is used to store the map (as 2D array of chars) and additional information
+Building the Graph object from it and the input (flights) is done in the dataReadingAndManip functions
+```
 
 On the graph each vertice represents a city and directed edges represent either roads between cities or flight connections, the edges are weighted with the time of travel.
+```
+Graph class is used to store the graph and perform Dijkstra's algorithm on it, the algorithm is implemented in the dijkstra function
+Graph is implemented using an adjacency list of Node objects, each one holding a list of it's weighted edges (Link objects) to other nodes
+Adjacency list was preferred over adjacency matrix because the map is a multi-graph and the number of nodes is unknown during it's construction
+Dijkstra's algorithm is implemented using a priority queue as a method of the Graph
+```
 
 Afterwards the program reads queries from standard input, each query consisting of two city names and, using Dijkstra's algorithm, finds the shortest path between the two given cities.
 
+---
+
+#### Implementation details
+- the implementation of Dijsktra's algorithm is based on the priority queue, which is implemented as a binary heap (in MinHeapQueue class)
+- the program uses a custom implementation of a map (HashTable and CStringHastTable class) and 2 directional list (LinkedList class) to store the graph and access the graph
+- as the use of `string` was prohibited, the program uses c-style arrays of chars instead
+
+As the program was checked by an automated testing system, the input and output format was strictly defined and had to be followed.
