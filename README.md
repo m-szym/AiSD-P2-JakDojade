@@ -1,4 +1,4 @@
-# JakDojade? 
+# GraphNav
 ### Algorithms and Data Structures project
 ## Author: Marek Szymański
 
