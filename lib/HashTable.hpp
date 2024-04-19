@@ -6,12 +6,13 @@
 #include <stdexcept>
 
 #include "LinkedList.hpp"
+#include "Pair.hpp"
 
 template<typename KeyT, typename DataT>
 class HashTable
 {
 private:
-    LinkedList<DataT>** bucketArray;
+    LinkedList<duo::Pair<KeyT, DataT>>** bucketArray;
     size_t size;
 
     virtual size_t hash(KeyT key) = 0;
@@ -21,11 +22,10 @@ public:
     HashTable(size_t newSize);
     virtual ~HashTable();
 
-
-    DataT* insert(KeyT key, DataT* data);
+    void insert(KeyT key, DataT data);
 
     HashTable* remove(KeyT key);
-    HashTable* remove(size_t index);
+    HashTable* clearIndex(size_t index);
 
     DataT* operator[](KeyT key);
     size_t getIndex(KeyT key);
@@ -46,11 +46,11 @@ size_t HashTable<KeyT, DataT>::getRightSize(size_t newSize)
 
 template<typename KeyT, typename DataT>
 HashTable<KeyT, DataT>::HashTable(size_t newSize)
-    : size(getRightSize(newSize)), bucketArray(new LinkedList<DataT>*[size])
+    : size(getRightSize(newSize)), bucketArray(new LinkedList<duo::Pair<KeyT, DataT>>*[size])
 {
     for (size_t i = 0; i < size; i++)
     {
-        bucketArray[i] = new LinkedList<DataT>();
+        bucketArray[i] = new LinkedList<duo::Pair<KeyT, DataT>>();
     }
 }
 
@@ -70,26 +70,26 @@ template<typename KeyT, typename DataT>
 DataT* HashTable<KeyT, DataT>::operator[](KeyT key)
 {
     size_t index = hash(key);
-    return bucketArray[index]->find(key);
+    return bucketArray[index]->getData([](duo::Pair<KeyT, DataT> pair, KeyT key) { return pair.getLeft() == key; });
 }
 
 template<typename KeyT, typename DataT>
-DataT* HashTable<KeyT, DataT>::insert(KeyT key, DataT* data)
+void HashTable<KeyT, DataT>::insert(KeyT key, DataT data)
 {
     size_t index = hash(key);
-    return bucketArray[index]->pushBack(data);
+    bucketArray[index]->pushBack(new duo::Pair<KeyT, DataT>(key, data));
 }
 
 template<typename KeyT, typename DataT>
 HashTable<KeyT, DataT>* HashTable<KeyT, DataT>::remove(KeyT key)
 {
     size_t index = hash(key);
-    bucketArray[index]->remove(key);
+    bucketArray[index]->remove([](duo::Pair<KeyT, DataT> pair, KeyT key) { return pair.getLeft() == key; });
     return this;
 }
 
 template<typename KeyT, typename DataT>
-HashTable<KeyT, DataT>* HashTable<KeyT, DataT>::remove(size_t index)
+HashTable<KeyT, DataT>* HashTable<KeyT, DataT>::clearIndex(size_t index)
 {
     delete bucketArray[index];
     bucketArray[index] = new LinkedList<DataT>();

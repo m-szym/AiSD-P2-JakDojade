@@ -1,4 +1,4 @@
-#include "Node.h"
+#include "../include/Node.h"
 
 Node::Node()
     : name(nullptr), index(-1), links()

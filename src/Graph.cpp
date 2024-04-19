@@ -1,9 +1,9 @@
-#include "Graph.h"
+#include "../include/Graph.h"
 
-Graph::Graph(int nodes_to_set)
-    :   nodesNr(nodes_to_set), 
-        nodesNamesHashtable(CStringHashTable<Node>(nodes_to_set)),
-        nodesArray(new Node*[nodes_to_set])
+Graph::Graph(int newNodesNr)
+    :   nodesNr(newNodesNr), 
+        nodesNamesHashtable(CStringHashTable<Node>(newNodesNr)),
+        nodesArray(new Node*[newNodesNr])
 {
     for (int i = 0; i < nodesNr; i++)
     {
@@ -18,7 +18,7 @@ Graph::~Graph()
 
 Node* Graph::insertNode(Node* node)
 {
-    nodesNamesHashtable.insert(node->getName(), node);
+    nodesNamesHashtable.insert(node->getName(), *node);
     nodesArray[node->getIndex()] = node;
 
     return node;
@@ -86,11 +86,12 @@ void Graph::printDijkstraResults(int previousStep[], int knownDistance[], int en
 
 void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
 {
-    int knownDistance[nodesNr]; 
-    bool wasVisited[nodesNr];
-    int previousStep[nodesNr];
-    MinHeapQueue queue = MinHeapQueue(2*nodesNr);
+    int knownDistance[nodesNr];                     // Array used to store the currently known shortest distance from the start node to each node.
+    bool wasVisited[nodesNr];                       // Array used to store information about which nodes were already visited.
+    int previousStep[nodesNr];                      // Array used to store the immediate previous node in the shortest path from the start node to each node.
+    MinHeapQueue queue = MinHeapQueue(2*nodesNr);   // Priority queue used to store the nodes to be visited.
 
+    // Initialization of the arrays.
     for (int i = 0; i < 2*nodesNr; i++)
     {
         if (i < nodesNr)
@@ -104,12 +105,16 @@ void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
     knownDistance[startNodeIndex] = 0;
     queue.enque(startNodeIndex, 0);
 
-    int currentNodeIndex = 0;
-    int tmpDistance = 0;
-    int tmpEnd = 0;
-    LinkedListNode<Link*>* currentLink = nullptr;
+    int currentNodeIndex = 0;                       // Index of the currently processed node.
+    int tmpDistance = 0;                            // Temporary variable used to store the distance to the currently processed node.
+    int tmpEnd = 0;                                 // Temporary variable used to store the index of the end node of the currently processed link.
+    LinkedListNode<Link*>* currentLink = nullptr;   // Pointer to the currently processed link (edge between two nodes).
 
-
+    // Main loop of the algorithm.
+    // The loop continues until the queue is empty.
+    // In each iteration, the node with the shortest known distance is dequeued and processed.
+    // The distances to all its neighbours are updated and the neighbours are enqueued.
+    // The loop ends when the end node is processed.
     while(queue.getQueueSize() >= 0)
     {
         currentNodeIndex = queue[queue.top()].getIndex();
@@ -149,4 +154,3 @@ void Graph::dijkstra(int startNodeIndex, int endNodeIndex, int mode)
 
     printDijkstraResults(previousStep, knownDistance, endNodeIndex, mode);
 }
-

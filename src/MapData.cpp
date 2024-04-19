@@ -1,4 +1,4 @@
-#include "MapData.h"
+#include "../include/MapData.h"
 
 MapData::MapData()
     :   height(0), width(0), citiesNr(0), road_tiles(0), 
@@ -37,7 +37,7 @@ MapData* MapData::load()
     return this;
 }
 
-MapData::~MapData()
+void MapData::clear()
 {
     for (int i = 0; i < height; i++)
     {
@@ -49,9 +49,19 @@ MapData::~MapData()
     delete[] map;
     delete[] cityNodesMask;
     delete[] lastVisitCycleNr;
+
+    map = nullptr;
+    cityNodesMask = nullptr;
+    lastVisitCycleNr = nullptr;
 }
 
-bool MapData::out_of_map(int i, int j, char direction)
+MapData::~MapData()
+{
+    if (map != nullptr)
+        clear();
+}
+
+bool MapData::outOfMap(int i, int j, char direction)
 {
     if (direction == DIR_UP && i - 1 < 0)               return true;
     else if (direction == DIR_DOWN && i + 1 >= height)  return true;
@@ -61,7 +71,7 @@ bool MapData::out_of_map(int i, int j, char direction)
         return false;    
 }
 
-bool MapData::out_of_map(int i, int j)
+bool MapData::outOfMap(int i, int j)
 {
     if ((i < 0) || (i >= height) ||
         (j < 0) || (j >= width))

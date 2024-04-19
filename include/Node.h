@@ -3,12 +3,13 @@
 
 #include <cstring>
 
-#include "string_helpers.h"
-#include "LinkedList.hpp"
+#include "cstringHelpers.h"
+#include "../lib/LinkedList.hpp"
 
 class Link;
 
-
+// Class representing a node in a graph and in the context of this program - a city on map.
+// As such it contains a name of the city, an index (of the node in the graph) and a list of links (edges) to other nodes. 
 class Node
 {
 private:
@@ -34,7 +35,8 @@ friend class Graph;
 friend class Link;
 };
 
-
+// Class representing a link (edge) between two nodes in a graph and in the context of this program - a connection between two cities.
+// As such it contains a length of the link, a flag indicating if the link represents a flight instead of road and pointers to the connected nodes.
 class Link
 {
 private:
