@@ -1,4 +1,4 @@
-# GraphNav
+# GraphNavigator
 ### Algorithms and Data Structures project
 ## Author: Marek Szymański
 
